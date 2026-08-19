@@ -1,0 +1,508 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="pt-24 pb-20 transition-colors duration-300">    
+    <section class="relative h-[200vh] bg-gray-50 dark:bg-[#0a0a0e]" id="hero-container">
+        <div class="sticky top-0 flex flex-col items-center justify-center w-full h-screen overflow-hidden">
+            <div id="video-wrapper" class="relative z-0 flex items-center justify-center overflow-hidden transition-all ease-out" 
+                style="width: 100vw; height: 100vh; border-radius: 1px; will-change: width, height, border-radius;">
+                
+                <img src="{{ url_for('static', filename='assets/video.gif') }}" alt="Fondo Animado" class="absolute inset-0 object-cover w-full h-full" />
+                
+                <div class="absolute inset-0 bg-black/40 mix-blend-multiply"></div>
+                <div class="absolute inset-0 bg-purple-900/30 mix-blend-overlay"></div>
+
+                <div id="video-inner-text" class="absolute inset-0 flex flex-col justify-center items-center text-center p-10 opacity-0 transition-opacity duration-700">
+                    <h2 class="z-10 w-full max-w-4xl mx-auto text-4xl md:text-5xl font-extrabold text-white mb-6 drop-shadow-lg tracking-tight">
+                        Tus Conciertos<br>En todo lugar.
+                    </h2>
+                    <a href="#suscripcion" class="inline-block z-10">
+                        <button class="px-8 py-3.5 text-sm font-bold text-white transition-colors duration-300 bg-purple-600 rounded-full shadow-xl hover:bg-purple-500 shadow-purple-600/30 whitespace-nowrap">
+                            Descargar APP
+                        </button>
+                    </a>
+                </div>
+            </div>
+
+            <div id="hero-main-text" class="absolute z-10 flex flex-col items-center justify-center w-full px-6 transition-all ease-out">
+                <h1 class="mb-8 text-6xl font-extrabold tracking-tight text-white md:text-8xl drop-shadow-2xl">TicketNow</h1>
+                <div class="flex flex-col justify-center w-full gap-4 sm:flex-row sm:w-auto">
+                    <a href="#exp-eventos"><button class="px-8 py-3 font-semibold text-white transition bg-purple-600 rounded-full shadow-lg hover:bg-purple-500 shadow-purple-600/20" >
+                        Explorar eventos
+                    </button></a>
+                    <a href="#como-funciona"><button class="px-8 py-3 font-semibold text-white transition bg-transparent border rounded-full border-white/20 hover:bg-white/10 backdrop-blur-md">
+                        ¿Cómo funciona?
+                    </button></a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    const initHeroAnimation = () => {
+        const videoWrapper = document.getElementById('video-wrapper');
+        const heroMainText = document.getElementById('hero-main-text');
+        const videoInnerText = document.getElementById('video-inner-text');
+        const heroContainer = document.getElementById('hero-container');
+
+        if (!videoWrapper || !heroContainer || !heroMainText || !videoInnerText) return;
+
+        window.addEventListener('scroll', () => {
+            const rect = heroContainer.getBoundingClientRect();
+            const scrollDistance = window.innerHeight; 
+            
+            let progress = Math.max(0, Math.min(Math.abs(rect.top) / scrollDistance, 1));
+            if (rect.top > 0) progress = 0;
+
+            heroMainText.style.opacity = String(1 - (progress * 2.5));
+            heroMainText.style.transform = `translateY(-${progress * 150}px) scale(${1 - progress * 0.1})`;
+            heroMainText.style.pointerEvents = progress > 0.3 ? 'none' : 'auto';
+
+            const startWidth = 100;
+            const endWidth = window.innerWidth > 1024 ? 70 : 100;
+            const currentWidth = startWidth - ((startWidth - endWidth) * progress);
+            const startHeight = 100;
+            const endHeight = window.innerWidth > 1024 ? 60 : 40;
+            const currentHeight = startHeight - ((startHeight - endHeight) * progress);
+            const currentRadius = progress * 32;
+
+            videoWrapper.style.width = `${currentWidth}vw`;
+            videoWrapper.style.height = `${currentHeight}vh`;
+            videoWrapper.style.borderRadius = `${currentRadius}px`;
+
+            let innerTextProgress = Math.max(0, (progress - 0.5) * 2);
+            videoInnerText.style.opacity = String(innerTextProgress);
+            videoInnerText.style.transform = `translateY(${(1 - innerTextProgress) * 20}px)`;
+        });
+    };
+    document.addEventListener('DOMContentLoaded', initHeroAnimation);
+</script>
+
+<section class="max-w-7xl mx-auto px-6 mt-4 mb-16 transition-colors duration-300 buscador-inteligente" 
+    data-es-index="true"
+    data-redirect=""
+    data-target=".group">
+    
+    <div class="flex justify-center mb-6 w-full">
+        <div class="bg-gray-200 dark:bg-[#1a1a24] p-1 rounded-full flex gap-1 border border-gray-300 dark:border-white/5">
+            <button type="button" class="btn-tipo-busqueda bg-purple-600 text-white px-5 md:px-8 py-2.5 rounded-full text-sm font-bold shadow-md transition-colors" data-destino="todos">
+                🔍 Todos
+            </button>
+            <button type="button" class="btn-tipo-busqueda text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-5 md:px-8 py-2.5 rounded-full text-sm font-bold transition-colors" data-destino="eventos">
+                🎟️ Eventos
+            </button>
+            <button type="button" class="btn-tipo-busqueda text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-5 md:px-8 py-2.5 rounded-full text-sm font-bold transition-colors" data-destino="mercancia">
+                👕 Mercancía
+            </button>
+        </div>
+    </div>
+
+    <div class="flex flex-col items-center justify-center max-w-3xl mx-auto w-full relative">
+        <div class="relative w-full grow">
+            <svg class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            
+            <input type="text" placeholder="Busca artista, evento o lugar..." 
+                class="input-buscador w-full bg-white dark:bg-[#12121a] border border-gray-300 dark:border-white/5 rounded-full py-4 pl-12 pr-28 md:pr-32 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition shadow-sm dark:shadow-none"
+            >
+            
+            <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full text-sm font-bold transition shadow-md btn-ejecutar-busqueda">
+                Buscar
+            </button>
+        </div>
+    </div>
+</section>
+
+<script>
+    const setupBuscadores = () => {
+        const contenedores = document.querySelectorAll('.buscador-inteligente');
+
+        contenedores.forEach(contenedor => {
+            const esIndex = contenedor.getAttribute('data-es-index') === 'true';
+            const redirectUrl = contenedor.getAttribute('data-redirect');
+            const targetSelector = contenedor.getAttribute('data-target') || '.group';
+            const input = contenedor.querySelector('.input-buscador');
+            const botonesFiltro = contenedor.querySelectorAll('.btn-filtro');
+            const botonesTipo = contenedor.querySelectorAll('.btn-tipo-busqueda');
+            const btnEjecutar = contenedor.querySelector('.btn-ejecutar-busqueda');
+
+            if (!input) return;
+
+            // ==========================================
+            // LÓGICA 1: ESTAMOS EN EL INDEX
+            // ==========================================
+            if (esIndex) {
+                let destinoActual = 'todos'; 
+
+                botonesTipo.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        botonesTipo.forEach(b => {
+                            b.className = 'btn-tipo-busqueda text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-5 md:px-8 py-2.5 rounded-full text-sm font-bold transition-colors';
+                        });
+                        btn.className = 'btn-tipo-busqueda bg-purple-600 text-white px-5 md:px-8 py-2.5 rounded-full text-sm font-bold shadow-md transition-colors';
+                        
+                        destinoActual = btn.getAttribute('data-destino') || 'todos';
+                        
+                        if (destinoActual === 'eventos') input.placeholder = "Busca artista, evento o lugar...";
+                        else if (destinoActual === 'mercancia') input.placeholder = "Busca hoodies, gorras, accesorios...";
+                        else input.placeholder = "Busca en toda la plataforma...";
+                        
+                        input.focus();
+                    });
+                });
+
+                const ejecutarRedireccionIndex = () => {
+                    const textoBusqueda = encodeURIComponent(input.value.trim());
+                    if (destinoActual === 'todos') {
+                        window.location.href = `/tienda?search=${textoBusqueda}&category=todos`;
+                    } else {
+                        window.location.href = `/${destinoActual}?search=${textoBusqueda}&category=todos`;
+                    }
+                };
+
+                input.addEventListener('keydown', (e) => { if (e.key === 'Enter') ejecutarRedireccionIndex(); });
+                btnEjecutar?.addEventListener('click', ejecutarRedireccionIndex);
+            }
+
+            // ==========================================
+            // LÓGICA 2 Y 3: TIENDA (Redirect) O PÁGINAS (Filtro local)
+            // ==========================================
+            if (!esIndex) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const searchParam = urlParams.get('search') || '';
+                const categoryParam = urlParams.get('category') || 'todos';
+
+                if (!redirectUrl) input.value = searchParam;
+
+                botonesFiltro.forEach(btn => {
+                    const cat = btn.getAttribute('data-cat') || 'todos';
+                    if (cat === categoryParam) {
+                        btn.className = 'btn-filtro bg-purple-600 text-white px-6 py-3 rounded-full text-sm font-semibold whitespace-nowrap transition shadow-lg shadow-purple-500/20';
+                    } else {
+                        btn.className = 'btn-filtro bg-gray-200 dark:bg-[#1a1a24] text-gray-700 dark:text-gray-300 px-6 py-3 rounded-full text-sm font-medium whitespace-nowrap transition hover:bg-gray-300 dark:hover:bg-[#252530]';
+                    }
+                });
+
+                const aplicarFiltroLocal = () => {
+                    const texto = input.value.toLowerCase().trim();
+                    let catActiva = 'todos';
+                    botonesFiltro.forEach(b => { if (b.classList.contains('bg-purple-600')) catActiva = b.getAttribute('data-cat') || 'todos'; });
+
+                    const tarjetas = document.querySelectorAll(targetSelector);
+                    tarjetas.forEach(tarjeta => {
+                        const tituloCard = tarjeta.getAttribute('data-title') || '';
+                        const categoriaCard = tarjeta.getAttribute('data-category') || '';
+                        const coincideTexto = tituloCard.includes(texto);
+                        const coincideCategoria = catActiva === 'todos' || categoriaCard === catActiva || categoriaCard.includes(catActiva);
+
+                        if (coincideTexto && coincideCategoria) {
+                            tarjeta.style.display = 'block';
+                            tarjeta.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, fill: 'forwards' });
+                        } else {
+                            tarjeta.style.display = 'none';
+                        }
+                    });
+                };
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        if (redirectUrl) window.location.href = `${redirectUrl}?search=${encodeURIComponent(input.value.trim())}&category=todos`;
+                        else aplicarFiltroLocal();
+                    }
+                });
+                
+                input.addEventListener('input', () => { if (!redirectUrl) aplicarFiltroLocal(); });
+
+                botonesFiltro.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const cat = btn.getAttribute('data-cat') || 'todos';
+                        if (redirectUrl) {
+                            window.location.href = `${redirectUrl}?search=${encodeURIComponent(input.value.trim())}&category=${cat}`;
+                        } else {
+                            botonesFiltro.forEach(b => b.className = 'btn-filtro bg-gray-200 dark:bg-[#1a1a24] text-gray-700 dark:text-gray-300 px-6 py-3 rounded-full text-sm font-medium whitespace-nowrap transition hover:bg-gray-300 dark:hover:bg-[#252530]');
+                            btn.className = 'btn-filtro bg-purple-600 text-white px-6 py-3 rounded-full text-sm font-semibold whitespace-nowrap transition shadow-lg shadow-purple-500/20';
+                            aplicarFiltroLocal();
+                        }
+                    });
+                });
+
+                if (!redirectUrl) setTimeout(aplicarFiltroLocal, 50);
+            }
+        });
+    };
+
+    document.addEventListener('DOMContentLoaded', setupBuscadores);
+</script>
+
+<main class="pt-10 pb-20 transition-colors duration-300 bg-gray-50 dark:bg-[#0a0a0e]" id="como-funciona">
+    
+    <section class="px-6 py-10 mx-auto max-w-7xl">
+        <h2 class="mb-10 text-3xl font-bold text-gray-900 dark:text-white">¿Cómo funciona?</h2>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 p-8 rounded-2xl hover:border-purple-500/30 transition group shadow-sm dark:shadow-none">
+                <div class="flex items-center justify-center w-12 h-12 mb-6 text-lg font-bold text-purple-600 transition bg-purple-100 rounded-full dark:bg-purple-600/20 dark:text-purple-400 group-hover:bg-purple-600 group-hover:text-white">01</div>
+                <h3 class="mb-3 text-xl font-semibold text-gray-900 dark:text-white">Busca tu evento</h3>
+                <p class="text-sm leading-relaxed text-gray-600 dark:text-gray-400">Navega por nuestra cartelera o usa el buscador para encontrar tu concierto favorito.</p>
+            </div>
+            <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 p-8 rounded-2xl hover:border-purple-500/30 transition group shadow-sm dark:shadow-none">
+                <div class="flex items-center justify-center w-12 h-12 mb-6 text-lg font-bold text-purple-600 transition bg-purple-100 rounded-full dark:bg-purple-600/20 dark:text-purple-400 group-hover:bg-purple-600 group-hover:text-white">02</div>
+                <h3 class="mb-3 text-xl font-semibold text-gray-900 dark:text-white">Paga de forma segura</h3>
+                <p class="text-sm leading-relaxed text-gray-600 dark:text-gray-400">Elige tus asientos y paga con tarjeta de crédito o débito a través de nuestra pasarela cifrada.</p>
+            </div>
+            <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 p-8 rounded-2xl hover:border-purple-500/30 transition group shadow-sm dark:shadow-none">
+                <div class="flex items-center justify-center w-12 h-12 mb-6 text-lg font-bold text-purple-600 transition bg-purple-100 rounded-full dark:bg-purple-600/20 dark:text-purple-400 group-hover:bg-purple-600 group-hover:text-white">03</div>
+                <h3 class="mb-3 text-xl font-semibold text-gray-900 dark:text-white">Descarga al instante</h3>
+                <p class="text-sm leading-relaxed text-gray-600 dark:text-gray-400">Recibe tus boletos digitales en tu correo y guárdalos en tu wallet para el día del evento.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="px-6 py-10 mx-auto max-w-7xl">
+        <h2 class="mb-10 text-3xl font-bold text-gray-900 dark:text-white">Noticias y Novedades</h2>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {% if noticias %}
+                {% for noticia in noticias %}
+                <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 p-6 rounded-2xl shadow-sm dark:shadow-none">
+                    <span class="inline-block px-3 py-1 mb-4 text-xs font-semibold text-purple-600 bg-purple-100 rounded-full dark:bg-purple-600/20 dark:text-purple-400">NOTICIA</span>
+                    <h3 class="mb-3 text-lg font-semibold text-gray-900 dark:text-white">{{ noticia.titulo }}</h3>
+                    <p class="mb-4 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{{ noticia.contenido[:80] }}...</p>
+                    <a href="/noticias" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">Leer más →</a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-600 dark:text-gray-400 col-span-3">No hay noticias por el momento.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="px-6 py-10 mx-auto max-w-7xl" id="exp-eventos">
+        <div class="flex items-end justify-between mb-10">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Eventos destacados</h2>
+            <a href="/eventos" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">Ver todos</a>
+        </div>
+        
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {% for ev in eventos %}
+            <div class="group relative rounded-4xl overflow-hidden shadow-md hover:shadow-2xl dark:hover:shadow-purple-900/20 transition-all duration-500 flex flex-col h-[420px] w-full border border-gray-200/50 dark:border-white/5">
+                {% if ev.imagen %}
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image: url('{{ ev.imagen }}');"></div>
+                {% else %}
+                    <div class="absolute inset-0 bg-gradient-to-br {{ ev.bg }} transition-transform duration-700 group-hover:scale-110"></div>
+                {% endif %}
+
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0e] via-[#0a0a0e]/60 to-transparent opacity-95"></div>
+
+                <div class="absolute top-6 w-full flex justify-center z-10">
+                    <span class="px-4 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest {{ ev.tag }} {{ ev.txt }} backdrop-blur-md shadow-sm">
+                        {{ ev.cat }}
+                    </span>
+                </div>
+
+                <div class="relative z-10 p-6 md:p-8 flex flex-col h-full justify-end items-center text-center mt-auto">
+                    <a href="/detalle-evento/{{ ev.id }}" class="hover:text-purple-400 transition-colors">
+                        <h3 class="text-2xl md:text-3xl font-extrabold text-white mb-2 leading-tight drop-shadow-md">{{ ev.tit }}</h3>
+                    </a>
+                    <p class="text-gray-300 text-xs md:text-sm mb-6 font-medium drop-shadow">15 Agosto 2026 • Estadio Atahualpa</p>
+                    
+                    <div class="w-full flex flex-col items-center gap-5">
+                        <span class="text-3xl font-black text-white drop-shadow-md">{{ ev.precio }}</span>
+                        
+                        <div class="flex w-full gap-3 justify-center">
+                            <a href="/detalle-evento/{{ ev.id }}" class="w-1/2 py-3 rounded-xl text-xs font-bold border border-white/20 text-white hover:bg-white/10 transition flex items-center justify-center backdrop-blur-sm">
+                                Ver Detalles
+                            </a>
+                            
+                            <button class="btn-comprar-evento w-1/2 bg-purple-600 hover:bg-purple-500 text-white py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-purple-600/40"
+                                data-id="{{ ev.id }}" 
+                                data-title="{{ ev.tit }}" 
+                                data-price="{{ ev.precio|replace('$', '') }}" 
+                                data-category="{{ ev.cat }}">
+                                Comprar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="px-6 py-10 mx-auto max-w-7xl">
+        <div class="flex items-end justify-between mb-10">
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Mercancía oficial</h2>
+            <a href="/mercancia" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">Ver tienda</a>
+        </div>
+        
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {% for prod in mercancia %}
+            <div class="group relative bg-white dark:bg-[#12121a] rounded-3xl overflow-hidden shadow-sm dark:shadow-none border border-gray-200 dark:border-white/5 hover:border-purple-500/30 transition-all duration-300 flex flex-col p-6 w-full h-100"
+                data-id="{{ prod.tit|lower|replace(' ', '-') }}" data-title="{{ prod.tit }}" data-price="{{ prod.precio|replace('$', '') }}" data-category="{{ prod.cat }}">
+                <div class="absolute top-6 left-6 z-10 flex gap-2">
+                    <span class="px-3 py-1 bg-gray-100 dark:bg-[#1a1a24] text-gray-600 dark:text-gray-400 text-[10px] font-bold rounded-full border border-gray-200 dark:border-white/10 uppercase tracking-wider">
+                        {{ prod.cat }}
+                    </span>
+                </div>
+                
+                <div class="w-full h-48 bg-gray-100 dark:bg-[#0a0a0e] rounded-2xl mb-6 flex items-center justify-center relative overflow-hidden">
+                    <svg class="w-16 h-16 text-gray-300 dark:text-gray-700 transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                </div>
+
+                <div class="flex flex-col flex-grow">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 leading-tight">{{ prod.tit }}</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mb-4 line-clamp-2">{{ prod.desc }}</p>
+                    
+                    <div class="mt-auto">
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            {% for talla in prod.tallas %}
+                            <span class="px-2 py-1 bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 rounded text-[10px] font-bold border border-gray-200 dark:border-white/5">{{ talla }}</span>
+                            {% endfor %}
+                            <div class="flex items-center gap-1 ml-auto">
+                                {% for col in prod.col %}
+                                <div class="w-4 h-4 rounded-full border border-gray-300 dark:border-white/20 shadow-sm" style="background-color: {{ col }};"></div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between mt-4">
+                            <span class="text-2xl font-black text-gray-900 dark:text-white">{{ prod.precio }}</span>
+                            <button class="btn-comprar-producto w-10 h-10 rounded-full bg-gray-900 dark:bg-white text-white dark:text-black flex items-center justify-center hover:bg-purple-600 dark:hover:bg-purple-400 hover:text-white dark:hover:text-white transition shadow-md hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-1">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section id="suscripcion" class="px-6 py-10 mx-auto mb-10 max-w-7xl">
+        <div class="bg-gradient-to-r from-purple-50 to-white dark:from-[#1b0d40] dark:to-[#0a0618] rounded-4xl p-10 md:p-16 flex flex-col md:flex-row items-center justify-between border border-purple-200 dark:border-purple-900/50 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-1/2 h-full rounded-full bg-purple-600/5 dark:bg-purple-600/10 blur-3xl"></div>
+            
+            <div class="z-10 max-w-lg mb-10 md:mb-0">
+                <span class="block mb-2 text-sm font-bold tracking-widest text-purple-600 uppercase dark:text-purple-400">TicketNow Premium</span>
+                <h2 class="mb-6 text-4xl font-bold text-gray-900 md:text-5xl dark:text-white">Hazte miembro<br>y ahorra más.</h2>
+                <ul class="mb-8 space-y-3">
+                    <li class="flex items-center text-gray-700 dark:text-gray-300">
+                        <svg class="w-5 h-5 mr-3 text-purple-600 dark:text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Acceso a preventas exclusivas
+                    </li>
+                    <li class="flex items-center text-gray-700 dark:text-gray-300">
+                        <svg class="w-5 h-5 mr-3 text-purple-600 dark:text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Descuentos en cargos por servicio
+                    </li>
+                    <li class="flex items-center text-gray-700 dark:text-gray-300">
+                        <svg class="w-5 h-5 mr-3 text-purple-600 dark:text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Fila rápida en eventos seleccionados
+                    </li>
+                </ul>
+                
+                <a href="/ticketapp" class="relative z-20 inline-block px-8 py-3 font-bold text-center text-white transition bg-purple-600 rounded-full shadow-lg dark:bg-yellow-400 hover:bg-purple-700 dark:hover:bg-yellow-300 dark:text-black">
+                    Adquirir membresía
+                </a>
+            </div>
+
+            <div class="relative z-10 w-full max-w-sm">
+                <div class="relative flex flex-col justify-between h-56 p-6 overflow-hidden border shadow-2xl bg-gradient-to-tr from-purple-600 to-indigo-500 rounded-2xl shadow-purple-600/30 border-white/20">
+                    <div class="absolute w-40 h-40 rounded-full -right-10 -top-10 bg-white/10 blur-2xl"></div>
+                    <div class="z-10 flex items-center justify-between text-white">
+                        <span class="text-xl font-bold tracking-wider">TN</span>
+                        <svg class="w-8 h-8 opacity-70" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                    </div>
+                    <div class="z-10 text-white">
+                        <p class="mb-1 text-xs text-white/60">MEMBER</p>
+                        <div class="font-mono text-xl tracking-widest text-white/90">•••• •••• •••• 2026</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    const initBotonesEventoYProducto = () => {
+        const botones = document.querySelectorAll('.btn-comprar-evento, .btn-comprar-producto');
+        botones.forEach(boton => {
+            const newBtn = boton.cloneNode(true);
+            boton.parentNode.replaceChild(newBtn, boton);
+            
+            newBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                let btn = e.target.closest('button');
+                const isProducto = btn.classList.contains('btn-comprar-producto');
+                const tarjeta = btn.closest('.group');
+                
+                const id = isProducto ? tarjeta.getAttribute('data-id') : btn.getAttribute('data-id');
+                const title = isProducto ? tarjeta.getAttribute('data-title') : btn.getAttribute('data-title');
+                const priceStr = isProducto ? tarjeta.getAttribute('data-price') : btn.getAttribute('data-price');
+                const category = isProducto ? tarjeta.getAttribute('data-category') : btn.getAttribute('data-category');
+                const price = parseFloat(priceStr || '0');
+
+                if (!isProducto) {
+                    const textoOriginal = btn.textContent;
+                    btn.textContent = 'Añadiendo...';
+                    btn.classList.add('opacity-75', 'cursor-wait');
+                    btn.disabled = true;
+                    
+                    setTimeout(() => {
+                        btn.textContent = '¡Añadido! ✅';
+                        btn.classList.replace('bg-purple-600', 'bg-green-500');
+                        btn.classList.replace('hover:bg-purple-500', 'hover:bg-green-400');
+                        
+                        setTimeout(() => {
+                            btn.textContent = textoOriginal;
+                            btn.classList.replace('bg-green-500', 'bg-purple-600');
+                            btn.classList.replace('hover:bg-green-400', 'hover:bg-purple-500');
+                            btn.classList.remove('opacity-75', 'cursor-wait');
+                            btn.disabled = false;
+                        }, 2000);
+                    }, 600);
+                } else {
+                    const btnHtml = btn.innerHTML;
+                    btn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+                    btn.classList.add('pointer-events-none');
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = '<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>';
+                        setTimeout(() => {
+                            btn.innerHTML = btnHtml;
+                            btn.classList.remove('pointer-events-none');
+                        }, 1500);
+                    }, 500);
+                }
+
+                const item = {
+                    id: id,
+                    title: title,
+                    price: price,
+                    category: category,
+                    type: isProducto ? 'mercancia' : 'evento',
+                    quantity: 1
+                };
+
+                let cart = JSON.parse(localStorage.getItem('ticketnow_cart') || '[]');
+                const existingIndex = cart.findIndex(i => i.id === item.id);
+                if (existingIndex > -1) cart[existingIndex].quantity += 1;
+                else cart.push(item);
+                localStorage.setItem('ticketnow_cart', JSON.stringify(cart));
+
+                const rect = btn.getBoundingClientRect();
+                const event = new CustomEvent('itemAddedToCart', {
+                    detail: {
+                        startX: rect.left + rect.width / 2,
+                        startY: rect.top + rect.height / 2,
+                        title: title,
+                        bgClass: isProducto ? 'from-gray-800 to-black' : 'from-purple-600 to-indigo-600'
+                    }
+                });
+                document.dispatchEvent(event);
+            });
+        });
+    };
+
+    document.addEventListener('DOMContentLoaded', initBotonesEventoYProducto);
+</script>
+{% endblock %}

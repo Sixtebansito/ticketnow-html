@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}{{ evento.tit }} - Detalle del Evento{% endblock %}
+
+{% block content %}
+<main class="pt-24 pb-16 min-h-screen bg-gray-50 dark:bg-[#0a0a0e] transition-colors duration-300">
+    <div class="max-w-5xl px-6 mx-auto">
+        <!-- Breadcrumb -->
+        <nav class="flex mb-8 text-sm text-gray-500 dark:text-gray-400">
+            <a href="/" class="hover:text-purple-600 dark:hover:text-purple-400">Inicio</a>
+            <span class="mx-2">/</span>
+            <a href="/eventos" class="hover:text-purple-600 dark:hover:text-purple-400">Eventos</a>
+            <span class="mx-2">/</span>
+            <span class="text-gray-900 dark:text-gray-200">{{ evento.tit }}</span>
+        </nav>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white dark:bg-[#12121a] p-8 md:p-12 rounded-3xl border border-gray-200 dark:border-white/5 shadow-xl dark:shadow-2xl">
+            
+            <!-- Imagen del Evento -->
+            <div class="relative w-full h-[500px] rounded-2xl overflow-hidden shadow-lg">
+                {% if evento.imagen %}
+                    <img src="{{ evento.imagen }}" alt="{{ evento.tit }}" class="object-cover w-full h-full hover:scale-105 transition-transform duration-700">
+                {% else %}
+                    <div class="w-full h-full bg-gradient-to-br from-purple-600 to-indigo-800 flex items-center justify-center">
+                        <svg class="w-24 h-24 text-white/20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                    </div>
+                {% endif %}
+                <div class="absolute top-4 left-4">
+                    <span class="px-4 py-2 text-xs font-bold text-white uppercase bg-purple-600/90 backdrop-blur-md rounded-full shadow-md">{{ evento.cat }}</span>
+                </div>
+            </div>
+
+            <!-- Detalles del Evento -->
+            <div class="flex flex-col justify-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white leading-tight mb-4 drop-shadow-sm">{{ evento.tit }}</h1>
+                
+                <div class="flex flex-col gap-4 mb-8 text-gray-600 dark:text-gray-300">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <span class="text-lg font-medium">{{ evento.fecha }} • {{ evento.hora }}</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <span class="text-lg font-medium">{{ evento.lugar }}</span>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Sobre el evento</h3>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">
+                        {{ evento.desc or 'No hay descripción detallada para este evento en este momento. Acompáñanos en una velada inolvidable y disfruta de la mejor experiencia en vivo.' }}
+                    </p>
+                </div>
+
+                <div class="bg-gray-100 dark:bg-white/5 p-6 rounded-2xl flex items-center justify-between mb-8 shadow-inner">
+                    <span class="text-gray-500 dark:text-gray-400 font-medium">Precio entrada general</span>
+                    <span class="text-4xl font-black text-purple-600 dark:text-purple-400">{{ evento.precio }}</span>
+                </div>
+
+                <button class="btn-comprar-evento w-full py-4 text-lg font-bold text-white transition-all bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 rounded-xl shadow-lg hover:shadow-purple-600/50 hover:-translate-y-1" data-id="{{ evento.id }}" data-tipo="evento" data-precio="{{ evento.precio_raw }}" data-nombre="{{ evento.tit }}">
+                    Agregar al Carrito
+                </button>
+            </div>
+            
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,28 @@
+# Entornos virtuales
+venv/
+env/
+.env
+
+# Archivos compilados de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Directorios de sistema
+.DS_Store
+
+# Archivos de la base de datos local si hubiera (SQLite, aunque usamos SQL Server)
+*.sqlite3
+
+# Node modules (usado por Tailwind u otros)
+node_modules/
+
+# Directorios de caché y build
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+static/assets/

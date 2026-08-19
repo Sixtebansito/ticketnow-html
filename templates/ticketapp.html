@@ -1,0 +1,358 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="pt-32 pb-20 min-h-screen bg-gray-50 dark:bg-[#0a0a0e] transition-colors duration-300">
+    
+    {% if not isVip %}
+    <section id="app-gateway" class="block px-6 mx-auto mb-10 text-center max-w-7xl">
+      <div class="relative mb-12">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-125 h-75 bg-purple-500/10 dark:bg-purple-500/5 blur-[100px] rounded-full pointer-events-none -z-10"></div>
+        <span class="inline-block px-3 py-1 mb-4 text-xs font-extrabold tracking-widest text-purple-600 uppercase bg-purple-100 rounded-full dark:bg-purple-600/20 dark:text-purple-400">
+          Acceso Ticket APP Suite
+        </span>
+        <h1 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 md:text-6xl dark:text-white">
+          Elige cómo quieres <br class="hidden md:block"/> <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-yellow-500">vivir tus eventos.</span>
+        </h1>
+        <p class="max-w-2xl mx-auto text-sm text-gray-600 dark:text-gray-400 md:text-base">
+          Accede de forma gratuita a las herramientas comunitarias o desbloquea el ecosistema premium con pases VIP diseñados para los verdaderos fanáticos.
+        </p>
+      </div>
+
+      <div class="grid items-stretch grid-cols-1 gap-8 mb-12 text-left md:grid-cols-3">
+        <!-- Plan Base -->
+        <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 rounded-3xl p-8 flex flex-col h-full shadow-md dark:shadow-none">
+          <h3 class="mb-2 text-2xl font-bold text-gray-900 dark:text-white">Fan Base</h3>
+          <p class="mb-6 text-sm text-gray-600 dark:text-gray-400 min-h-10">Para quienes solo buscan comprar tickets y mercancía.</p>
+          <div class="mb-8">
+            <span class="text-4xl font-extrabold text-gray-900 dark:text-white">Gratis</span>
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">/siempre</span>
+          </div>
+          <ul class="mb-8 space-y-4 grow">
+            <li class="flex items-start">
+              <svg class="w-5 h-5 mr-3 text-green-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Compra de tickets estándar</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-5 h-5 mr-3 text-green-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Acceso a la tienda de mercancía</span>
+            </li>
+          </ul>
+          <a href="{{ url_for('auth') }}" class="block w-full py-4 font-bold text-center text-gray-900 transition bg-gray-100 rounded-xl dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 dark:text-white">
+            Crear cuenta gratis
+          </a>
+        </div>
+
+        <!-- Plan VIP Mensual -->
+        <div class="bg-white dark:bg-[#12121a] border border-purple-500/30 rounded-3xl p-8 flex flex-col h-full shadow-lg shadow-purple-500/10 relative">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Más Popular</div>
+          <h3 class="mb-2 text-2xl font-bold text-purple-600 dark:text-purple-400">Plan VIP Mensual</h3>
+          <p class="mb-6 text-sm text-gray-600 dark:text-gray-400 min-h-10">Desbloquea todo el ecosistema de beneficios para fans.</p>
+          <div class="mb-8">
+            <span class="text-4xl font-extrabold text-gray-900 dark:text-white">$9.99</span>
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">/mensual</span>
+          </div>
+          <ul class="mb-8 space-y-4 grow">
+            <li class="flex items-start">
+              <svg class="w-5 h-5 mr-3 text-purple-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Uso ilimitado del Chat CarPool</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-5 h-5 mr-3 text-purple-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Acceso a cupones de Marcas Invitadas</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-5 h-5 mr-3 text-purple-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Prioridad en preventa de tickets</span>
+            </li>
+          </ul>
+          <button type="button" class="w-full py-4 font-bold text-white transition bg-purple-600 border border-transparent shadow-sm rounded-xl hover:bg-purple-700 btn-adquirir-app" data-plan="Plan VIP Mensual" data-price="9.99" data-type="membresia">
+            Suscribirse y Activar
+          </button>
+        </div>
+
+        <!-- Plan Anual VIP -->
+        <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 rounded-3xl p-8 flex flex-col h-full shadow-md dark:shadow-none">
+          <h3 class="mb-2 text-2xl font-bold text-gray-900 dark:text-white">Family Pack VIP</h3>
+          <p class="mb-6 text-sm text-gray-600 dark:text-gray-400 min-h-10">Ahorra con la suscripción anual para ti y tu familia.</p>
+          <div class="mb-8">
+            <span class="text-4xl font-extrabold text-gray-900 dark:text-white">$89.99</span>
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">/anual</span>
+          </div>
+          <ul class="mb-8 space-y-4 grow">
+            <li class="flex items-start">
+              <svg class="w-5 h-5 mr-3 text-green-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Todos los beneficios del Plan VIP</span>
+            </li>
+            <li class="flex items-start">
+              <svg class="w-5 h-5 mr-3 text-green-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">2 meses gratis incluidos</span>
+            </li>
+          </ul>
+          <button type="button" class="w-full py-4 font-bold text-white transition bg-gray-900 shadow-sm rounded-xl dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 dark:text-gray-900 btn-adquirir-app" data-plan="Family Pack VIP" data-price="89.99" data-type="membresia">
+            Pagar Plan Anual
+          </button>
+        </div>
+      </div>
+    </section>
+    {% else %}
+    <section id="app-workspace" class="block px-6 mx-auto transition-all duration-500 opacity-100 max-w-7xl">
+      
+      <div class="mb-12 text-center">
+        <div class="inline-flex bg-gray-200 dark:bg-[#1a1a24] p-1 rounded-full border border-gray-300 dark:border-white/5 shadow-inner">
+            <button id="tab-servicios" class="bg-purple-600 text-white px-6 py-2.5 rounded-full text-xs font-bold transition-all shadow-md">
+                💼 Servicios (Gratis y Pago)
+            </button>
+            <button id="tab-promociones" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-6 py-2.5 rounded-full text-xs font-bold transition-all">
+                🎁 Promociones y Descuentos
+            </button>
+        </div>
+      </div>
+
+      <div id="panel-servicios" class="block space-y-12">
+          <div class="grid items-stretch grid-cols-1 gap-8 lg:grid-cols-3">
+              
+              <div class="lg:col-span-2 bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 p-6 md:p-8 rounded-3xl shadow-sm flex flex-col h-full">
+                  <div class="mb-4">
+                      <span class="text-[10px] bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400 font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider">Gratis / Comunidad</span>
+                      <h3 class="mt-2 text-xl font-bold text-gray-900 dark:text-white">Comunidad CarPool</h3>
+                      <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Coordina traslados y comparte gastos con fans validados de forma directa.</p>
+                  </div>
+                  <div class="bg-gray-50 dark:bg-[#0a0a0e] rounded-xl p-4 border border-gray-200 dark:border-white/10 flex flex-col grow h-48">
+                      <div id="chat-box" class="pr-2 space-y-2 overflow-y-auto text-xs grow" style="scrollbar-width: thin; display: flex; flex-direction: column; gap: 8px;">
+                      </div>
+                      <div class="flex gap-2 pt-2 mt-3 border-t border-gray-200 dark:border-white/5">
+                          <input type="text" id="chat-msg-input" placeholder="Escribe los detalles de tu viaje..." class="grow bg-white dark:bg-[#12121a] border border-gray-300 dark:border-white/10 rounded-xl px-3 py-2 text-xs text-gray-900 dark:text-white focus:outline-none focus:border-purple-500">
+                          <button id="chat-msg-btn" class="px-4 text-xs font-bold text-white transition bg-purple-600 hover:bg-purple-700 rounded-xl">Enviar</button>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="lg:col-span-1">
+                  <!-- Componente PlanCard simulado inline -->
+                  <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 p-6 md:p-8 rounded-3xl shadow-sm h-full flex flex-col relative overflow-hidden transition-all hover:border-purple-500/30 group">
+                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-purple-500/10 dark:bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-all duration-500"></div>
+                    <div class="relative z-10 flex flex-col h-full">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Pase Parqueadero Seguro</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-6 grow">Reserva un espacio numerado exclusivo vigilado por cámaras de seguridad a pasos del recinto.</p>
+                        
+                        <div class="mb-6">
+                            <span class="text-3xl font-extrabold text-gray-900 dark:text-white">$12.00</span>
+                        </div>
+                        
+                        <ul class="space-y-3 mb-8 text-xs text-gray-600 dark:text-gray-400">
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                Lugar numerado garantizado
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                Cámaras de vigilancia 24h
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                Ingreso inmediato por código QR
+                            </li>
+                        </ul>
+                        
+                        <button class="w-full bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-3.5 rounded-xl transition shadow-lg shadow-purple-600/20 mt-auto btn-comprar-app-direct" data-item="Pase Parqueadero Seguro" data-price="12.00">
+                            Adquirir
+                        </button>
+                    </div>
+                </div>
+              </div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 p-6 rounded-2xl flex gap-4 items-center">
+                  <div class="flex items-center justify-center w-12 h-12 text-xl text-purple-600 bg-purple-100 rounded-xl dark:bg-purple-600/20 dark:text-purple-400 shrink-0">📅</div>
+                  <div>
+                      <span class="text-[9px] bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400 px-2 py-0.5 rounded font-bold uppercase">Gratis</span>
+                      <h4 class="mt-1 font-bold text-gray-900 dark:text-white">Monitoreo de Fechas e Info</h4>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Consulta mapas de localidades, cronogramas de apertura y restricciones de objetos sin costos.</p>
+                  </div>
+              </div>
+              <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 p-6 rounded-2xl flex gap-4 items-center relative overflow-hidden">
+                  <div class="flex items-center justify-center w-12 h-12 text-xl text-yellow-700 bg-yellow-100 rounded-xl dark:bg-yellow-500/10 dark:text-yellow-400 shrink-0">🪪</div>
+                  <div class="grow0">
+                      <span class="text-[9px] bg-purple-100 text-purple-700 dark:bg-purple-600/20 px-2 py-0.5 rounded font-bold uppercase">Suscripción</span>
+                      <h4 class="mt-1 font-bold text-gray-900 dark:text-white">Pase Digital Holográfico NFC</h4>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Acceso sin filas mediante tecnología Tap-to-Enter y lounges exclusivos de patrocinadores.</p>
+                  </div>
+                  <button class="absolute px-3 py-2 text-xs font-bold text-white bg-purple-600 rounded-lg right-4 btn-comprar-app-direct" data-item="Digital-Card-NFC" data-price="25.00">$25.00</button>
+              </div>
+          </div>
+      </div>
+
+      <div id="panel-promociones" class="hidden space-y-8 animate-slide-up">
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+              
+              <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 p-6 rounded-2xl flex gap-4 items-center shadow-sm">
+                  <div class="flex items-center justify-center text-2xl rounded-full w-14 h-14 bg-amber-500/10 text-amber-500 shrink-0">🍿</div>
+                  <div>
+                      <div class="flex items-center gap-2"><span class="text-[9px] bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400 px-2 py-0.5 rounded font-bold uppercase">Gratis</span></div>
+                      <h4 class="mt-1 font-bold text-gray-900 dark:text-white">Cupones de Marcas Invitadas</h4>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Obtén 2x1 en Cinemark o Supercines y descuentos en restaurantes aliados presentando cualquier ticket.</p>
+                  </div>
+              </div>
+
+              <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 p-6 rounded-2xl flex gap-4 items-center shadow-sm">
+                  <div class="flex items-center justify-center text-2xl text-red-500 rounded-full w-14 h-14 bg-red-500/10 shrink-0">💳</div>
+                  <div>
+                      <div class="flex items-center gap-2"><span class="text-[9px] bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400 px-2 py-0.5 rounded font-bold uppercase">Gratis</span></div>
+                      <h4 class="mt-1 font-bold text-gray-900 dark:text-white">Alianzas Bancarias (Pichincha/Produbanco)</h4>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Disfruta de hasta 10% de descuento directo y difiere tus compras hasta 6 meses sin intereses.</p>
+                  </div>
+              </div>
+
+              <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 p-6 rounded-2xl flex gap-4 items-center shadow-sm relative">
+                  <div class="flex items-center justify-center text-2xl text-blue-500 rounded-full w-14 h-14 bg-blue-500/10 shrink-0">🚌</div>
+                  <div class="pr-20">
+                      <div class="flex items-center gap-2"><span class="text-[9px] bg-purple-100 text-purple-700 dark:bg-purple-600/20 px-2 py-0.5 rounded font-bold uppercase">Suscripción</span></div>
+                      <h4 class="mt-1 font-bold text-gray-900 dark:text-white">Paquete de Transporte Conectado</h4>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Viajes ida y vuelta directos en buses climatizados privados desde Guayaquil, Cuenca o Ambato al concierto.</p>
+                  </div>
+                  <button class="absolute px-3 py-2 text-xs font-bold text-white bg-purple-600 rounded-lg right-4 btn-comprar-app-direct" data-item="Paquete-Transporte-Bus" data-price="35.00">Unirse</button>
+              </div>
+
+              <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 p-6 rounded-2xl flex gap-4 items-center shadow-sm">
+                  <div class="flex items-center justify-center text-2xl text-purple-500 rounded-full w-14 h-14 bg-purple-500/10 shrink-0">⭐</div>
+                  <div>
+                      <div class="flex items-center gap-2"><span class="text-[9px] bg-purple-100 text-purple-700 dark:bg-purple-600/20 px-2 py-0.5 rounded font-bold uppercase">Suscripción</span></div>
+                      <h4 class="mt-1 font-bold text-gray-900 dark:text-white">Descuentos Cruzados de Membresía</h4>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Accede a rebajas del 15% en barras seleccionadas del evento y coleccionables oficiales de la tienda de mercancía.</p>
+                  </div>
+              </div>
+
+          </div>
+      </div>
+
+    </section>
+    {% endif %}
+</main>
+
+<script>
+  const setupSuiteApp = () => {
+    const btnPlanesYAdquirir = document.querySelectorAll('.btn-adquirir-app, .btn-comprar-app-direct');
+    
+    const tabServicios = document.getElementById('tab-servicios');
+    const tabPromociones = document.getElementById('tab-promociones');
+    const panelServicios = document.getElementById('panel-servicios');
+    const panelPromociones = document.getElementById('panel-promociones');
+
+    btnPlanesYAdquirir.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const plan = btn.getAttribute('data-plan') || btn.getAttribute('data-item') || 'Plan VIP';
+            const price = parseFloat(btn.getAttribute('data-price') || '0');
+            const type = btn.getAttribute('data-type') || 'membresia';
+
+            const item = {
+                id: plan.toLowerCase().replace(/\s+/g, '-'),
+                title: plan,
+                price: price,
+                category: type === 'mercancia' ? 'Pase / Accesorio' : 'Membresía VIP',
+                type: type,
+                quantity: 1
+            };
+
+            let cart = JSON.parse(localStorage.getItem('ticketnow_cart') || '[]');
+            const existingIndex = cart.findIndex((i) => i.id === item.id);
+            if (existingIndex > -1) cart[existingIndex].quantity += 1;
+            else cart.push(item);
+            localStorage.setItem('ticketnow_cart', JSON.stringify(cart));
+
+            const rect = btn.getBoundingClientRect();
+            document.dispatchEvent(new CustomEvent('itemAddedToCart', {
+                detail: { startX: rect.left + rect.width/2, startY: rect.top + rect.height/2, title: plan, bgClass: 'from-amber-400 to-purple-700' }
+            }));
+
+            if (type === 'membresia' || btn.classList.contains('btn-comprar-app-direct')) {
+                setTimeout(() => window.location.href = '/carrito', 500);
+            }
+        });
+    });
+
+    const activeClass = "bg-purple-600 text-white px-6 py-2.5 rounded-full text-xs font-bold transition-all shadow-md";
+    const inactiveClass = "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-6 py-2.5 rounded-full text-xs font-bold transition-all";
+
+    tabServicios?.addEventListener('click', () => {
+        tabServicios.className = activeClass; tabPromociones.className = inactiveClass;
+        panelServicios.classList.remove('hidden'); panelServicios.classList.add('block');
+        panelPromociones.classList.remove('block'); panelPromociones.classList.add('hidden');
+    });
+
+    tabPromociones?.addEventListener('click', () => {
+        tabPromociones.className = activeClass; tabServicios.className = inactiveClass;
+        panelPromociones.classList.remove('hidden'); panelPromociones.classList.add('block');
+        panelServicios.classList.remove('block'); panelServicios.classList.add('hidden');
+    });
+
+    const chatInput = document.getElementById('chat-msg-input');
+    const chatSend = document.getElementById('chat-msg-btn');
+    const chatBox = document.getElementById('chat-box');
+    const currentUsername = "{{ usuario.username if usuario else '' }}";
+
+    const renderMessage = (msg, isMine) => {
+        const msgEl = document.createElement('div');
+        if (isMine) {
+            msgEl.className = 'bg-purple-600 text-white p-2.5 rounded-xl border border-transparent self-end ml-auto text-right max-w-xs';
+            msgEl.innerHTML = `<span class="block text-xs font-bold text-purple-200">Tú</span>${msg.texto}`;
+        } else {
+            msgEl.className = 'bg-white dark:bg-[#12121a] p-2.5 rounded-xl border border-gray-100 dark:border-white/5 mr-auto max-w-xs';
+            msgEl.innerHTML = `<span class="block text-xs font-bold text-purple-600">${msg.usuario?.nombre || 'Usuario'}</span>${msg.texto}`;
+        }
+        chatBox?.appendChild(msgEl);
+    };
+
+    const loadChat = async () => {
+        if (!chatBox) return;
+        try {
+            const res = await fetch('/api/chat');
+            const data = await res.json();
+            chatBox.innerHTML = '';
+            data.forEach((msg) => {
+                const isMine = msg.usuario?.nombre === currentUsername;
+                renderMessage(msg, isMine);
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const enviarMensajeChat = async () => {
+        if (!chatInput || !chatInput.value.trim() || !chatBox) return;
+        const texto = chatInput.value.trim();
+        chatInput.value = '';
+        
+        renderMessage({ texto: texto, usuario: { nombre: currentUsername } }, true);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        try {
+            await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ texto })
+            });
+            loadChat();
+        } catch(err) {
+            console.error(err);
+        }
+    };
+
+    chatSend?.addEventListener('click', enviarMensajeChat);
+    chatInput?.addEventListener('keydown', (e) => { if (e.key === 'Enter') enviarMensajeChat(); });
+
+    if (document.getElementById('app-workspace')) {
+        loadChat();
+        setInterval(loadChat, 5000); // Poll every 5s
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', setupSuiteApp);
+</script>
+
+<style>
+    .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+{% endblock %}

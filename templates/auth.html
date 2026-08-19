@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0a0a0e] pt-32 pb-20 px-6 transition-colors duration-300 relative overflow-hidden">
+    
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-purple-600/10 dark:bg-purple-600/5 blur-[120px] rounded-full pointer-events-none"></div>
+
+    <div class="w-full max-w-md bg-white dark:bg-[#12121a] rounded-3xl p-8 md:p-10 border border-gray-200 dark:border-white/5 shadow-2xl relative z-10 transition-all">
+        
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-600/20 text-purple-600 dark:text-purple-400 mb-3 shadow-inner">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            </div>
+            <h1 id="auth-title" class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">Bienvenido de vuelta</h1>
+            <p id="auth-subtitle" class="text-xs text-gray-500 dark:text-gray-400 mt-1">Ingresa a tu cuenta para gestionar tus tickets y pases VIP.</p>
+            {% if error %}
+                <p class="mt-4 p-2 bg-red-100 text-red-700 text-sm rounded-lg font-bold">{{ error }}</p>
+            {% endif %}
+        </div>
+
+        <div class="flex bg-gray-100 dark:bg-[#1a1a24] p-1 rounded-2xl border border-gray-200 dark:border-white/5 mb-6">
+            <button id="tab-login" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all bg-white dark:bg-[#252530] text-gray-900 dark:text-white shadow-sm">
+                Iniciar Sesión
+            </button>
+            <button id="tab-register" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                Registrarse
+            </button>
+        </div>
+
+        <form id="login-form" class="space-y-4" method="POST">
+            <input type="hidden" name="action" value="login" />
+            <div>
+                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1.5">Usuario</label>
+                <input type="text" name="username" required placeholder="tu_usuario" class="w-full bg-gray-50 dark:bg-[#1a1a24] border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+            </div>
+            <div>
+                <div class="flex justify-between items-center mb-1.5">
+                    <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Contraseña</label>
+                    <a href="#" class="text-[11px] text-purple-600 dark:text-purple-400 hover:underline font-medium">¿Olvidaste tu contraseña?</a>
+                </div>
+                <input type="password" name="password" required placeholder="••••••••" class="w-full bg-gray-50 dark:bg-[#1a1a24] border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+            </div>
+            
+            <div class="pt-2">
+                <button id="btn-login-submit" type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-purple-600/20 text-sm">
+                    Ingresar a mi cuenta
+                </button>
+            </div>
+        </form>
+
+        <form id="register-form" class="space-y-4 hidden" method="POST">
+            <input type="hidden" name="action" value="register" />
+            <div>
+                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1.5">Nombre Completo</label>
+                <input type="text" name="nombre" required placeholder="Camila Andrade" class="w-full bg-gray-50 dark:bg-[#1a1a24] border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1.5">Nombre de Usuario</label>
+                <input type="text" name="username" required placeholder="camila_123" class="w-full bg-gray-50 dark:bg-[#1a1a24] border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1.5">Correo Electrónico</label>
+                <input type="email" name="email" required placeholder="camila@ejemplo.com" class="w-full bg-gray-50 dark:bg-[#1a1a24] border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1.5">Contraseña</label>
+                <input type="password" name="password" required placeholder="Crea una contraseña segura" class="w-full bg-gray-50 dark:bg-[#1a1a24] border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
+            </div>
+            <div class="flex items-center gap-2 pt-1">
+                <input type="checkbox" id="terms" required class="w-4 h-4 rounded text-purple-600 focus:ring-purple-500">
+                <label for="terms" class="text-[11px] text-gray-600 dark:text-gray-400">Acepto los <a href="#" class="text-purple-600 dark:text-purple-400 underline">términos y condiciones</a></label>
+            </div>
+            
+            <div class="pt-2">
+                <button id="btn-register-submit" type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-purple-600/20 text-sm">
+                    Crear mi cuenta gratis
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-6 text-center text-xs text-gray-600 dark:text-gray-400">
+            <span id="footer-text">¿Aún no tienes cuenta?</span>
+            <button id="toggle-auth-link" class="text-purple-600 dark:text-purple-400 font-bold hover:underline ml-1">
+                Regístrate gratis
+            </button>
+        </div>
+
+    </div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Elementos DOM
+        const tabLogin = document.getElementById('tab-login');
+        const tabRegister = document.getElementById('tab-register');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const authTitle = document.getElementById('auth-title');
+        const authSubtitle = document.getElementById('auth-subtitle');
+        const footerText = document.getElementById('footer-text');
+        const toggleAuthLink = document.getElementById('toggle-auth-link');
+
+        const activeTabClasses = "flex-1 py-2.5 rounded-xl text-xs font-bold transition-all bg-white dark:bg-[#252530] text-gray-900 dark:text-white shadow-sm";
+        const inactiveTabClasses = "flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white";
+
+        const showLogin = () => {
+            tabLogin.className = activeTabClasses;
+            tabRegister.className = inactiveTabClasses;
+            loginForm?.classList.remove('hidden');
+            registerForm?.classList.add('hidden');
+            if (authTitle) authTitle.textContent = "Bienvenido de vuelta";
+            if (authSubtitle) authSubtitle.textContent = "Ingresa a tu cuenta para gestionar tus tickets y pases VIP.";
+            if (footerText) footerText.textContent = "¿Aún no tienes cuenta?";
+            if (toggleAuthLink) toggleAuthLink.textContent = "Regístrate gratis";
+        };
+
+        const showRegister = () => {
+            tabRegister.className = activeTabClasses;
+            tabLogin.className = inactiveTabClasses;
+            registerForm?.classList.remove('hidden');
+            loginForm?.classList.add('hidden');
+            if (authTitle) authTitle.textContent = "Crea tu cuenta";
+            if (authSubtitle) authSubtitle.textContent = "Únete a TicketNow para acceder a preventas y la comunidad CarPool.";
+            if (footerText) footerText.textContent = "¿Ya tienes una cuenta?";
+            if (toggleAuthLink) toggleAuthLink.textContent = "Inicia sesión";
+        };
+
+        tabLogin?.addEventListener('click', showLogin);
+        tabRegister?.addEventListener('click', showRegister);
+
+        toggleAuthLink?.addEventListener('click', () => {
+            if (loginForm?.classList.contains('hidden')) showLogin();
+            else showRegister();
+        });
+
+        const procesarAcceso = (btn, msj) => {
+            btn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                ${msj}
+            `;
+        };
+
+        loginForm?.addEventListener('submit', (e) => {
+            const btn = document.getElementById('btn-login-submit');
+            procesarAcceso(btn, 'Autenticando...');
+        });
+
+        registerForm?.addEventListener('submit', (e) => {
+            const btn = document.getElementById('btn-register-submit');
+            procesarAcceso(btn, 'Creando cuenta...');
+        });
+    });
+</script>
+{% endblock %}

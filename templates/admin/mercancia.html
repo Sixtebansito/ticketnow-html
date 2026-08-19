@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="pt-32 pb-20 min-h-screen bg-gray-50 dark:bg-[#0a0a0e] transition-colors duration-300">
+    <div class="px-6 mx-auto max-w-7xl">
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Gestión de Mercancía</h1>
+            <a href="{{ url_for('admin_dashboard') }}" class="px-4 py-2 text-sm font-bold text-gray-700 transition bg-white border border-gray-200 shadow-sm dark:bg-[#12121a] dark:text-gray-300 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5">Volver al Dashboard</a>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="p-4 mb-6 text-green-700 bg-green-100 rounded-xl dark:bg-green-500/10 dark:text-green-400">
+            {% for message in messages %}
+              {{ message }}
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <!-- Formulario para agregar -->
+        <div class="p-6 mb-10 bg-white border border-gray-200 shadow-sm dark:bg-[#12121a] dark:border-white/5 rounded-2xl">
+            <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Agregar Mercancía</h2>
+            <form action="{{ url_for('admin_mercancia') }}" method="POST" class="space-y-4">
+                <input type="hidden" name="action" value="add">
+                
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Título</label>
+                        <input type="text" name="titulo" required class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Categoría</label>
+                        <input type="text" name="categoria" required class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="Ropa, Accesorios...">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Descripción</label>
+                    <textarea name="descripcion" required rows="3" class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Precio ($)</label>
+                        <input type="number" step="0.01" name="precio" required class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Tallas (Separadas por comas)</label>
+                        <input type="text" name="tallas" class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="S, M, L">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Colores (Separados por comas)</label>
+                        <input type="text" name="colores" class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="#000, #fff">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">URL de Imagen</label>
+                    <input type="text" name="imagenUrl" class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="https://...">
+                </div>
+
+                <button type="submit" class="px-6 py-2 font-bold text-white transition bg-purple-600 rounded-xl hover:bg-purple-700">Guardar Mercancía</button>
+            </form>
+        </div>
+
+        <!-- Lista de Mercancia -->
+        <div class="bg-white border border-gray-200 shadow-sm dark:bg-[#12121a] dark:border-white/5 rounded-2xl overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 dark:bg-[#1a1a24] border-b border-gray-200 dark:border-white/5">
+                        <th class="p-4 text-sm font-bold text-gray-900 dark:text-white">ID</th>
+                        <th class="p-4 text-sm font-bold text-gray-900 dark:text-white">Categoría</th>
+                        <th class="p-4 text-sm font-bold text-gray-900 dark:text-white">Título</th>
+                        <th class="p-4 text-sm font-bold text-gray-900 dark:text-white">Precio</th>
+                        <th class="p-4 text-sm font-bold text-gray-900 dark:text-white">Estado</th>
+                        <th class="p-4 text-sm font-bold text-gray-900 dark:text-white">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in mercancia %}
+                    <tr class="border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">
+                        <td class="p-4 text-sm text-gray-500 dark:text-gray-400">{{ m.id }}</td>
+                        <td class="p-4 text-sm text-gray-500 dark:text-gray-400">{{ m.categoria }}</td>
+                        <td class="p-4 text-sm text-gray-900 dark:text-white">{{ m.titulo }}</td>
+                        <td class="p-4 text-sm text-gray-500 dark:text-gray-400">${{ "%.2f"|format(m.precio) }}</td>
+                        <td class="p-4">
+                            {% if m.activo %}
+                                <span class="px-2 py-1 text-xs font-bold text-green-700 bg-green-100 rounded-full dark:bg-green-500/10 dark:text-green-400">Activo</span>
+                            {% else %}
+                                <span class="px-2 py-1 text-xs font-bold text-red-700 bg-red-100 rounded-full dark:bg-red-500/10 dark:text-red-400">Inactivo</span>
+                            {% endif %}
+                        </td>
+                        <td class="p-4">
+                            <form action="{{ url_for('admin_mercancia') }}" method="POST">
+                                <input type="hidden" name="action" value="toggle">
+                                <input type="hidden" name="id" value="{{ m.id }}">
+                                <button type="submit" class="text-sm font-bold text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300">
+                                    {{ 'Desactivar' if m.activo else 'Activar' }}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="pt-32 pb-20 min-h-screen bg-gray-50 dark:bg-[#0a0a0e] transition-colors duration-300">
+    <div class="px-6 mx-auto max-w-7xl">
+        
+        <div class="flex items-center gap-6 mb-12">
+            <div class="flex items-center justify-center w-20 h-20 text-3xl font-bold text-white rounded-full shadow-lg bg-gradient-to-tr from-purple-600 to-yellow-500">
+                {{ usuario.nombre[:2] | upper }}
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Hola, {{ usuario.nombre }}</h1>
+                <p class="text-gray-500 dark:text-gray-400">
+                    {% if usuario.rol == 'admin' %}Administrador{% else %}Miembro VIP Premium{% endif %} 
+                    • Miembro desde {{ usuario.fechaRegistro.strftime('%Y') }}
+                </p>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-10 md:flex-row">
+            
+            <aside class="w-full md:w-1/4">
+                <nav class="flex flex-col gap-2">
+                    <a href="#" class="px-5 py-3 font-bold text-purple-700 transition bg-purple-100 rounded-xl dark:bg-purple-600/20 dark:text-purple-400">Mis Tickets e Historial</a>
+                    {% if usuario.rol == 'admin' %}
+                        <div class="flex flex-wrap gap-2">
+                            <a href="/admin" class="px-5 py-3 font-medium text-gray-600 transition rounded-xl dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/5">Dashboard Admin</a>
+                            <a href="/admin/eventos" class="px-5 py-3 font-medium text-gray-600 transition rounded-xl dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/5">Eventos</a>
+                            <a href="/admin/noticias" class="px-5 py-3 font-medium text-gray-600 transition rounded-xl dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/5">Noticias</a>
+                            <a href="/admin/mercancia" class="px-5 py-3 font-medium text-gray-600 transition rounded-xl dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/5">Mercancía</a>
+                            <a href="/admin/faqs" class="px-5 py-3 font-medium text-gray-600 transition rounded-xl dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/5">Ayuda (FAQ)</a>
+                            <a href="/admin/auditoria" class="px-5 py-3 font-medium text-gray-600 transition rounded-xl dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/5">Auditoría</a>
+                        </div>
+                    {% endif %}
+                    <a href="/perfil/info" class="px-5 py-3 font-medium text-gray-600 transition rounded-xl dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/5">Información Personal</a>
+                    <a href="/perfil/pagos" class="px-5 py-3 font-medium text-gray-600 transition rounded-xl dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/5">Métodos de Pago</a>
+                    <a href="/logout" class="px-5 py-3 mt-4 font-medium text-red-500 transition rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10">Cerrar Sesión</a>
+                </nav>
+            </aside>
+
+            <div class="w-full space-y-6 md:w-3/4">
+                
+                <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Próximos Eventos</h2>
+                
+                {% if pedidos and pedidos[0].items and pedidos[0].items[0].evento %}
+                    <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 rounded-3xl p-6 flex flex-col md:flex-row items-center gap-6 shadow-sm hover:shadow-md transition">
+                        <div class="bg-gray-50 dark:bg-[#1a1a24] rounded-2xl w-24 h-24 flex flex-col items-center justify-center shrink-0 border border-gray-200 dark:border-white/10">
+                            <span class="text-sm font-bold text-purple-600 uppercase dark:text-purple-400">
+                                {{ pedidos[0].items[0].evento.fecha.strftime('%b') }}
+                            </span>
+                            <span class="text-3xl font-extrabold text-gray-900 dark:text-white">
+                                {{ pedidos[0].items[0].evento.fecha.strftime('%d') }}
+                            </span>
+                        </div>
+                        
+                        <div class="text-center grow md:text-left">
+                            <div class="flex items-center justify-center gap-2 mb-1 md:justify-start">
+                                <span class="text-[10px] bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400 px-2 py-0.5 rounded font-bold uppercase tracking-wider">Compra Confirmada</span>
+                                <span class="text-[10px] text-gray-400">#ORD-{{ pedidos[0].id }}</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ pedidos[0].items[0].evento.titulo }}</h3>
+                            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ pedidos[0].items[0].cantidad }}x Entradas • {{ pedidos[0].items[0].evento.lugar }}</p>
+                        </div>
+
+                        <div class="w-full shrink-0 md:w-auto">
+                            <button onclick="alert('Descargando PDF Oficial y añadiendo a Apple Wallet/Google Pay...')" class="flex items-center justify-center w-full gap-2 px-6 py-3 font-bold text-white transition bg-gray-900 shadow-lg md:w-auto dark:bg-white dark:text-black rounded-xl hover:opacity-80">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                Descargar Tickets
+                            </button>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-gray-500">No tienes próximos eventos.</p>
+                {% endif %}
+
+                <h2 class="mt-12 mb-4 text-xl font-bold text-gray-900 dark:text-white">Historial de Compras</h2>
+                
+                <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 rounded-3xl overflow-hidden shadow-sm">
+                    <table class="w-full text-sm text-left text-gray-600 dark:text-gray-400">
+                        <thead class="bg-gray-50 dark:bg-[#1a1a24] text-gray-900 dark:text-gray-300 font-bold uppercase text-xs">
+                            <tr>
+                                <th class="px-6 py-4">Fecha</th>
+                                <th class="px-6 py-4">Pedido ID</th>
+                                <th class="px-6 py-4">Total</th>
+                                <th class="px-6 py-4">Factura</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-white/5">
+                            {% for pedido in pedidos %}
+                            <tr class="transition hover:bg-gray-50 dark:hover:bg-white/5">
+                                <td class="px-6 py-4">{{ pedido.fecha.strftime('%Y-%m-%d') }}</td>
+                                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">#ORD-{{ pedido.id }}</td>
+                                <td class="px-6 py-4">${{ "%.2f"|format(pedido.total) }}</td>
+                                <td class="px-6 py-4"><a href="#" class="text-purple-600 dark:text-purple-400 hover:underline">Ver Detalle</a></td>
+                            </tr>
+                            {% else %}
+                                <tr><td colspan="4" class="px-6 py-4 text-center">No hay compras registradas.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

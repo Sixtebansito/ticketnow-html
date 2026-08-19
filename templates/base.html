@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es" class="dark"> <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{% block title %}TicketNow{% endblock %}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {}
+            }
+        }
+    </script>
+    
+    <script>
+        const getInitialTheme = () => {
+            if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+                return localStorage.getItem('theme');
+            }
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                return 'dark';
+            }
+            return 'light';
+        };
+        
+        let currentTheme = getInitialTheme();
+        
+        const applyTheme = (theme) => {
+            if (theme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
+            window.localStorage.setItem('theme', theme);
+        };
+
+        applyTheme(currentTheme);
+
+        window.toggleTheme = () => {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(currentTheme);
+        };
+    </script>
+    
+    <style>
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-[#0a0a0e] text-gray-900 dark:text-white antialiased transition-colors duration-300 selection:bg-purple-600 selection:text-white">
+    {% include 'header.html' %}
+
+    {% block content %}
+    {% endblock %}
+
+    {% include 'footer.html' %}
+
+    <button id="btn-back-to-top" aria-label="Volver arriba" class="fixed bottom-6 right-6 md:bottom-10 md:right-10 bg-purple-600 hover:bg-purple-500 text-white p-3 rounded-full shadow-lg shadow-purple-600/30 opacity-0 translate-y-10 pointer-events-none transition-all duration-300 z-50">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"></path>
+        </svg>
+    </button>
+
+    <script>
+        const initBackToTop = () => {
+            const backToTopBtn = document.getElementById('btn-back-to-top');
+            if (!backToTopBtn) return;
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 400) {
+                    backToTopBtn.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+                    backToTopBtn.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+                } else {
+                    backToTopBtn.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+                    backToTopBtn.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+                }
+            });
+
+            backToTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        };
+
+        document.addEventListener('DOMContentLoaded', initBackToTop);
+    </script>
+</body>
+</html>
