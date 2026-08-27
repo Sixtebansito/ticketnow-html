@@ -18,12 +18,20 @@
                 <p class="mt-2 text-3xl font-extrabold text-gray-900 dark:text-white">${{ "%.2f"|format(stats.ventas) }}</p>
             </div>
             <div class="p-6 bg-white border border-gray-200 shadow-sm dark:bg-[#12121a] dark:border-white/5 rounded-2xl">
-                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Eventos Activos</h3>
-                <p class="mt-2 text-3xl font-extrabold text-gray-900 dark:text-white">{{ stats.eventos }}</p>
+                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Pedidos Pendientes</h3>
+                <p class="mt-2 text-3xl font-extrabold text-gray-900 dark:text-white">{{ stats.pedidos_pendientes }}</p>
+            </div>
+            <div class="p-6 bg-white border border-gray-200 shadow-sm dark:bg-[#12121a] dark:border-white/5 rounded-2xl">
+                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Solicitudes VIP</h3>
+                <p class="mt-2 text-3xl font-extrabold text-gray-900 dark:text-white">{{ stats.solicitudes_vip }}</p>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-5">
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+            <a href="{{ url_for('admin_aprobaciones') }}" class="p-6 transition bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-500/30 shadow-sm rounded-2xl hover:border-purple-500">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Aprobaciones</h3>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gestionar pedidos y solicitudes VIP</p>
+            </a>
             <a href="{{ url_for('admin_eventos') }}" class="p-6 transition bg-white border border-gray-200 shadow-sm dark:bg-[#12121a] dark:border-white/5 rounded-2xl hover:border-purple-500">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white">Eventos</h3>
                 <p class="mt-1 text-sm text-gray-500">Gestionar conciertos y fechas</p>

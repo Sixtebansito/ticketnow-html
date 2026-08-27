@@ -26,13 +26,17 @@
 
             <div id="hero-main-text" class="absolute z-10 flex flex-col items-center justify-center w-full px-6 transition-all ease-out">
                 <h1 class="mb-8 text-6xl font-extrabold tracking-tight text-white md:text-8xl drop-shadow-2xl">TicketNow</h1>
-                <div class="flex flex-col justify-center w-full gap-4 sm:flex-row sm:w-auto">
-                    <a href="#exp-eventos"><button class="px-8 py-3 font-semibold text-white transition bg-purple-600 rounded-full shadow-lg hover:bg-purple-500 shadow-purple-600/20" >
-                        Explorar eventos
-                    </button></a>
-                    <a href="#como-funciona"><button class="px-8 py-3 font-semibold text-white transition bg-transparent border rounded-full border-white/20 hover:bg-white/10 backdrop-blur-md">
-                        ¿Cómo funciona?
-                    </button></a>
+                <div class="flex flex-row items-stretch justify-center w-full max-w-md gap-3 px-4 mx-auto">
+                    <a href="#exp-eventos" class="flex-1 flex">
+                        <button class="w-full flex-1 flex items-center justify-center px-2 sm:px-8 py-3 text-xs sm:text-base font-semibold text-white transition bg-purple-600 rounded-full shadow-lg hover:bg-purple-500 shadow-purple-600/20 whitespace-nowrap">
+                            Explorar eventos
+                        </button>
+                    </a>
+                    <a href="#como-funciona" class="flex-1 flex">
+                        <button class="w-full flex-1 flex items-center justify-center px-2 sm:px-8 py-3 text-xs sm:text-base font-semibold text-white transition bg-transparent border rounded-full border-white/20 hover:bg-white/10 backdrop-blur-md whitespace-nowrap">
+                            ¿Cómo funciona?
+                        </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -92,8 +96,8 @@
             <button type="button" class="btn-tipo-busqueda text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-5 md:px-8 py-2.5 rounded-full text-sm font-bold transition-colors" data-destino="eventos">
                 🎟️ Eventos
             </button>
-            <button type="button" class="btn-tipo-busqueda text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-5 md:px-8 py-2.5 rounded-full text-sm font-bold transition-colors" data-destino="mercancia">
-                👕 Mercancía
+            <button type="button" class="btn-tipo-busqueda text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-5 md:px-8 py-2.5 rounded-full text-sm font-bold transition-colors" data-destino="tienda">
+                Tienda
             </button>
         </div>
     </div>
@@ -146,7 +150,7 @@
                         destinoActual = btn.getAttribute('data-destino') || 'todos';
                         
                         if (destinoActual === 'eventos') input.placeholder = "Busca artista, evento o lugar...";
-                        else if (destinoActual === 'mercancia') input.placeholder = "Busca hoodies, gorras, accesorios...";
+                        else if (destinoActual === 'tienda') input.placeholder = "Busca hoodies, gorras, accesorios...";
                         else input.placeholder = "Busca en toda la plataforma...";
                         
                         input.focus();
@@ -264,11 +268,26 @@
         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
             {% if noticias %}
                 {% for noticia in noticias %}
-                <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 p-6 rounded-2xl shadow-sm dark:shadow-none">
-                    <span class="inline-block px-3 py-1 mb-4 text-xs font-semibold text-purple-600 bg-purple-100 rounded-full dark:bg-purple-600/20 dark:text-purple-400">NOTICIA</span>
-                    <h3 class="mb-3 text-lg font-semibold text-gray-900 dark:text-white">{{ noticia.titulo }}</h3>
-                    <p class="mb-4 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{{ noticia.contenido[:80] }}...</p>
-                    <a href="/noticias" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">Leer más →</a>
+                <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 rounded-2xl shadow-sm dark:shadow-none overflow-hidden hover:shadow-xl transition-shadow flex flex-col">
+                    {% if noticia.imagenUrl %}
+                        {% if '<svg' in noticia.imagenUrl %}
+                            <div class="w-full h-48 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:object-cover">
+                                {{ noticia.imagenUrl|safe }}
+                            </div>
+                        {% else %}
+                            <img src="{{ noticia.imagenUrl }}" alt="{{ noticia.titulo }}" class="w-full h-48 object-cover">
+                        {% endif %}
+                    {% else %}
+                        <div class="w-full h-48 bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800" alt="Noticia TicketNow" class="object-cover w-full h-full">
+                        </div>
+                    {% endif %}
+                    <div class="p-6 flex flex-col flex-grow">
+                        <span class="inline-block px-3 py-1 mb-4 text-xs font-semibold text-purple-600 bg-purple-100 rounded-full dark:bg-purple-600/20 dark:text-purple-400 self-start">NOTICIA</span>
+                        <h3 class="mb-3 text-lg font-semibold text-gray-900 dark:text-white">{{ noticia.titulo }}</h3>
+                        <p class="mb-4 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{{ noticia.resumen or noticia.contenido[:80] }}...</p>
+                        <a href="{{ url_for('noticia_detalle', id=noticia.id) }}" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 mt-auto">Leer más →</a>
+                    </div>
                 </div>
                 {% endfor %}
             {% else %}
@@ -285,11 +304,17 @@
         
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {% for ev in eventos %}
-            <div class="group relative rounded-4xl overflow-hidden shadow-md hover:shadow-2xl dark:hover:shadow-purple-900/20 transition-all duration-500 flex flex-col h-[420px] w-full border border-gray-200/50 dark:border-white/5">
+            <div class="group relative rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl dark:hover:shadow-purple-900/20 transition-all duration-500 flex flex-col h-[420px] w-full border border-gray-200/50 dark:border-white/5">
                 {% if ev.imagen %}
-                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image: url('{{ ev.imagen }}');"></div>
+                    {% if '<svg' in ev.imagen %}
+                        <div class="absolute inset-0 transition-transform duration-700 group-hover:scale-110 flex items-center justify-center text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/10 [&>svg]:w-full [&>svg]:h-full [&>svg]:object-cover">
+                            {{ ev.imagen|safe }}
+                        </div>
+                    {% else %}
+                        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image: url('{{ ev.imagen }}');"></div>
+                    {% endif %}
                 {% else %}
-                    <div class="absolute inset-0 bg-gradient-to-br {{ ev.bg }} transition-transform duration-700 group-hover:scale-110"></div>
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image: url('https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800');"></div>
                 {% endif %}
 
                 <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0e] via-[#0a0a0e]/60 to-transparent opacity-95"></div>
@@ -304,7 +329,7 @@
                     <a href="/detalle-evento/{{ ev.id }}" class="hover:text-purple-400 transition-colors">
                         <h3 class="text-2xl md:text-3xl font-extrabold text-white mb-2 leading-tight drop-shadow-md">{{ ev.tit }}</h3>
                     </a>
-                    <p class="text-gray-300 text-xs md:text-sm mb-6 font-medium drop-shadow">15 Agosto 2026 • Estadio Atahualpa</p>
+                    <p class="text-gray-300 text-xs md:text-sm mb-6 font-medium drop-shadow">{{ ev.fecha }} • {{ ev.lugar }}</p>
                     
                     <div class="w-full flex flex-col items-center gap-5">
                         <span class="text-3xl font-black text-white drop-shadow-md">{{ ev.precio }}</span>
@@ -314,13 +339,9 @@
                                 Ver Detalles
                             </a>
                             
-                            <button class="btn-comprar-evento w-1/2 bg-purple-600 hover:bg-purple-500 text-white py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-purple-600/40"
-                                data-id="{{ ev.id }}" 
-                                data-title="{{ ev.tit }}" 
-                                data-price="{{ ev.precio|replace('$', '') }}" 
-                                data-category="{{ ev.cat }}">
+                            <a href="{{ url_for('detalle_evento', id=ev.id) }}" class="w-1/2 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-purple-600/40 flex items-center justify-center">
                                 Comprar
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -332,13 +353,13 @@
     <section class="px-6 py-10 mx-auto max-w-7xl">
         <div class="flex items-end justify-between mb-10">
             <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Mercancía oficial</h2>
-            <a href="/mercancia" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">Ver tienda</a>
+            <a href="/tienda" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">Ver tienda</a>
         </div>
         
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {% for prod in mercancia %}
             <div class="group relative bg-white dark:bg-[#12121a] rounded-3xl overflow-hidden shadow-sm dark:shadow-none border border-gray-200 dark:border-white/5 hover:border-purple-500/30 transition-all duration-300 flex flex-col p-6 w-full h-100"
-                data-id="{{ prod.tit|lower|replace(' ', '-') }}" data-title="{{ prod.tit }}" data-price="{{ prod.precio|replace('$', '') }}" data-category="{{ prod.cat }}">
+                data-id="{{ prod.id }}" data-title="{{ prod.tit }}" data-price="{{ prod.precio_raw }}" data-category="{{ prod.cat }}">
                 <div class="absolute top-6 left-6 z-10 flex gap-2">
                     <span class="px-3 py-1 bg-gray-100 dark:bg-[#1a1a24] text-gray-600 dark:text-gray-400 text-[10px] font-bold rounded-full border border-gray-200 dark:border-white/10 uppercase tracking-wider">
                         {{ prod.cat }}
@@ -346,7 +367,23 @@
                 </div>
                 
                 <div class="w-full h-48 bg-gray-100 dark:bg-[#0a0a0e] rounded-2xl mb-6 flex items-center justify-center relative overflow-hidden">
-                    <svg class="w-16 h-16 text-gray-300 dark:text-gray-700 transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                    {% if prod.imagen %}
+                        {% if '<svg' in prod.imagen %}
+                            <div class="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:object-cover transition-transform duration-500 group-hover:scale-110 {% if prod.total_stock == 0 %}grayscale opacity-60{% endif %}">
+                                {{ prod.imagen|safe }}
+                            </div>
+                        {% else %}
+                            <img src="{{ prod.imagen }}" alt="{{ prod.tit }}" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110 {% if prod.total_stock == 0 %}grayscale opacity-60{% endif %}">
+                        {% endif %}
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1555529771-835f59bfc50c?w=800" alt="TicketNow Merch" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110 {% if prod.total_stock == 0 %}grayscale opacity-60{% endif %}">
+                    {% endif %}
+                    
+                    {% if prod.total_stock == 0 %}
+                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
+                            <span class="bg-red-600 text-white font-black text-xl px-4 py-2 border-2 border-red-800 rounded uppercase tracking-widest transform -rotate-12">AGOTADO</span>
+                        </div>
+                    {% endif %}
                 </div>
 
                 <div class="flex flex-col flex-grow">
@@ -354,20 +391,30 @@
                     <p class="text-gray-500 dark:text-gray-400 text-sm mb-4 line-clamp-2">{{ prod.desc }}</p>
                     
                     <div class="mt-auto">
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            {% for talla in prod.tallas %}
-                            <span class="px-2 py-1 bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 rounded text-[10px] font-bold border border-gray-200 dark:border-white/5">{{ talla }}</span>
-                            {% endfor %}
-                            <div class="flex items-center gap-1 ml-auto">
-                                {% for col in prod.col %}
-                                <div class="w-4 h-4 rounded-full border border-gray-300 dark:border-white/20 shadow-sm" style="background-color: {{ col }};"></div>
+                        {% if prod.total_stock > 0 and prod.total_stock < 5 %}
+                            <div class="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400 text-[10px] font-bold px-2 py-1 rounded mb-3 flex items-center gap-1 border border-orange-200 dark:border-orange-800/50">
+                                ATENCIÓN, SOLO QUEDAN {{ prod.total_stock }} RESTANTES
+                            </div>
+                        {% endif %}
+                        
+                        <div class="flex flex-col gap-2 mb-4">
+                            <div class="flex flex-wrap gap-2 size-selector-{{ prod.id }}">
+                                {% for inv in prod.tallas %}
+                                    <label class="cursor-pointer relative group">
+                                        <input type="radio" name="talla_{{ prod.id }}" value="{{ inv.talla }}" class="peer sr-only" {% if inv.stock == 0 %}disabled{% endif %}>
+                                        <span class="flex items-center justify-center px-2 py-1 min-w-[2rem] bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded border border-gray-200 dark:border-white/10 text-[10px] font-bold transition-all peer-checked:bg-purple-600 peer-checked:text-white peer-checked:border-purple-600 peer-disabled:opacity-40 peer-disabled:cursor-not-allowed hover:border-purple-400">
+                                            {{ inv.talla }}
+                                        </span>
+                                    </label>
+                                {% else %}
+                                    <span class="text-xs text-gray-500">Única</span>
                                 {% endfor %}
                             </div>
                         </div>
                         
                         <div class="flex items-center justify-between mt-4">
                             <span class="text-2xl font-black text-gray-900 dark:text-white">{{ prod.precio }}</span>
-                            <button class="btn-comprar-producto w-10 h-10 rounded-full bg-gray-900 dark:bg-white text-white dark:text-black flex items-center justify-center hover:bg-purple-600 dark:hover:bg-purple-400 hover:text-white dark:hover:text-white transition shadow-md hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-1">
+                            <button {% if prod.total_stock == 0 %}disabled{% endif %} class="btn-comprar-producto w-10 h-10 rounded-full {% if prod.total_stock == 0 %}bg-gray-300 dark:bg-gray-700 cursor-not-allowed{% else %}bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-purple-600 dark:hover:bg-purple-400 hover:text-white dark:hover:text-white shadow-md hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-1{% endif %} flex items-center justify-center transition" data-id="{{ prod.id }}" data-nombre="{{ prod.tit }}" data-precio="{{ prod.precio_raw }}">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
                             </button>
                         </div>
@@ -400,7 +447,7 @@
                     </li>
                 </ul>
                 
-                <a href="/ticketapp" class="relative z-20 inline-block px-8 py-3 font-bold text-center text-white transition bg-purple-600 rounded-full shadow-lg dark:bg-yellow-400 hover:bg-purple-700 dark:hover:bg-yellow-300 dark:text-black">
+                <a href="/precios-vip" class="relative z-20 inline-block px-8 py-3 font-bold text-center text-white transition bg-purple-600 rounded-full shadow-lg dark:bg-yellow-400 hover:bg-purple-700 dark:hover:bg-yellow-300 dark:text-black">
                     Adquirir membresía
                 </a>
             </div>
@@ -438,8 +485,26 @@
                 const id = isProducto ? tarjeta.getAttribute('data-id') : btn.getAttribute('data-id');
                 const title = isProducto ? tarjeta.getAttribute('data-title') : btn.getAttribute('data-title');
                 const priceStr = isProducto ? tarjeta.getAttribute('data-price') : btn.getAttribute('data-price');
-                const category = isProducto ? tarjeta.getAttribute('data-category') : btn.getAttribute('data-category');
                 const price = parseFloat(priceStr || '0');
+                
+                let selectedTalla = null;
+                if (isProducto) {
+                    const tallaRadios = tarjeta.querySelectorAll(`input[name="talla_${id}"]`);
+                    if (tallaRadios.length > 0) {
+                        if (tallaRadios.length === 1) {
+                            selectedTalla = tallaRadios[0].value;
+                        } else {
+                            const checkedRadio = tarjeta.querySelector(`input[name="talla_${id}"]:checked`);
+                            if (!checkedRadio) {
+                                alert('Por favor, selecciona una talla antes de añadir al carrito.');
+                                return;
+                            }
+                            selectedTalla = checkedRadio.value;
+                        }
+                    } else {
+                        selectedTalla = 'Única';
+                    }
+                }
 
                 if (!isProducto) {
                     const textoOriginal = btn.textContent;
@@ -476,15 +541,16 @@
 
                 const item = {
                     id: id,
-                    title: title,
+                    talla: selectedTalla,
+                    title: title + (selectedTalla ? ` (Talla: ${selectedTalla})` : ''),
                     price: price,
-                    category: category,
+                    category: isProducto ? 'Mercancía' : 'Evento',
                     type: isProducto ? 'mercancia' : 'evento',
                     quantity: 1
                 };
 
                 let cart = JSON.parse(localStorage.getItem('ticketnow_cart') || '[]');
-                const existingIndex = cart.findIndex(i => i.id === item.id);
+                const existingIndex = cart.findIndex(i => i.id === item.id && i.talla === item.talla);
                 if (existingIndex > -1) cart[existingIndex].quantity += 1;
                 else cart.push(item);
                 localStorage.setItem('ticketnow_cart', JSON.stringify(cart));

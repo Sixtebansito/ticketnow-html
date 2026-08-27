@@ -14,7 +14,7 @@ with app.app_context():
     ]
     
     for i, ev in enumerate(eventos):
-        ev.imagen = event_images[i % len(event_images)]
+        ev.imagenUrl = event_images[i % len(event_images)]
     
     mercancias = Mercancia.query.all()
     # Unsplash merch/clothing images
@@ -26,7 +26,7 @@ with app.app_context():
     ]
     
     for i, m in enumerate(mercancias):
-        m.imagen = merch_images[i % len(merch_images)]
+        m.imagenUrl = merch_images[i % len(merch_images)]
         
     db.session.commit()
     print("Database images updated successfully.")

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Hazte VIP - TicketNow{% endblock %}
+
+{% block content %}
+<main class="pt-32 pb-20 min-h-screen bg-gray-50 dark:bg-[#0a0a0e] transition-colors duration-300">
+    <div class="max-w-4xl px-6 mx-auto text-center">
+        <h1 class="text-4xl font-extrabold text-gray-900 md:text-5xl dark:text-white mb-6">Únete al Club VIP de TicketNow</h1>
+        <p class="text-xl text-gray-600 dark:text-gray-400 mb-12">Disfruta de beneficios exclusivos, acceso anticipado y mucho más.</p>
+        
+        <div class="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16 text-left">
+            <!-- Plan Standard -->
+            <div class="bg-white dark:bg-[#12121a] p-8 rounded-3xl border border-gray-200 dark:border-white/5 shadow-lg flex flex-col">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Usuario Standard</h2>
+                <p class="text-gray-500 dark:text-gray-400 mb-6">Gratis de por vida.</p>
+                <div class="text-4xl font-black text-gray-900 dark:text-white mb-6">$0 <span class="text-lg text-gray-500 font-normal">/mes</span></div>
+                <ul class="space-y-4 mb-8 text-gray-700 dark:text-gray-300 flex-grow">
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Compra de entradas
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Compra de mercancía
+                    </li>
+                    <li class="flex items-center gap-3 opacity-50">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Acceso a TicketAPP
+                    </li>
+                    <li class="flex items-center gap-3 opacity-50">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Filas prioritarias
+                    </li>
+                </ul>
+                <a href="{{ url_for('auth') if not usuario else url_for('perfil') }}" class="block w-full mt-auto py-3 px-4 text-center text-purple-600 font-bold border-2 border-purple-600 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-900/20 transition">
+                    Tu Plan Actual
+                </a>
+            </div>
+
+            <!-- Plan VIP -->
+            <div class="bg-gradient-to-b from-purple-900 to-indigo-900 p-8 rounded-3xl shadow-xl shadow-purple-900/20 text-white relative transform md:-translate-y-4">
+                <div class="absolute top-0 right-0 bg-gradient-to-r from-pink-500 to-purple-500 text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-3xl uppercase tracking-widest">
+                    Más popular
+                </div>
+                <h2 class="text-2xl font-bold mb-2">Membresía VIP</h2>
+                <p class="text-purple-200 mb-6">La mejor experiencia para fans.</p>
+                <div class="text-4xl font-black mb-6">$10 <span class="text-lg text-purple-300 font-normal">/mes</span></div>
+                <ul class="space-y-4 mb-8 text-purple-100">
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Compra de entradas
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Compra de mercancía
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Uso exclusivo de TicketAPP
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Acceso y filas prioritarias
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Descuentos en merch
+                    </li>
+                </ul>
+                {% if not usuario %}
+                    <a href="{{ url_for('auth') }}" class="block w-full py-3 px-4 text-center bg-white text-purple-900 font-bold rounded-xl hover:bg-gray-100 transition shadow-lg">
+                        Inicia Sesión para Suscribirte
+                    </a>
+                {% elif not usuario.esVip %}
+                    <form action="/solicitar-vip" method="POST">
+                        <button type="submit" class="w-full py-3 px-4 text-center bg-white text-purple-900 font-bold rounded-xl hover:bg-gray-100 transition shadow-lg">
+                            Solicitar Membresía VIP
+                        </button>
+                    </form>
+                {% else %}
+                    <button disabled class="w-full py-3 px-4 text-center bg-purple-800 text-white font-bold rounded-xl cursor-not-allowed border border-purple-700">
+                        Ya eres VIP
+                    </button>
+                {% endif %}
+            </div>
+
+            <!-- Plan Familiar -->
+            <div class="bg-white dark:bg-[#12121a] p-8 rounded-3xl border border-gray-200 dark:border-white/5 shadow-lg">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Plan Familiar</h2>
+                <p class="text-gray-500 dark:text-gray-400 mb-6">Para ti y 3 amigos más.</p>
+                <div class="text-4xl font-black text-gray-900 dark:text-white mb-6">$30 <span class="text-lg text-gray-500 font-normal">/mes</span></div>
+                <ul class="space-y-4 mb-8 text-gray-700 dark:text-gray-300">
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 4 cuentas VIP
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Compra de entradas
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Uso de TicketAPP
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Acceso y filas prioritarias
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Descuentos en merch familiar
+                    </li>
+                </ul>
+                {% if not usuario %}
+                    <a href="{{ url_for('auth') }}" class="block w-full py-3 px-4 text-center text-purple-600 font-bold border-2 border-purple-600 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-900/20 transition">
+                        Inicia Sesión para Suscribirte
+                    </a>
+                {% else %}
+                    <form action="/solicitar-vip" method="POST">
+                        <button type="submit" class="w-full py-3 px-4 text-center text-purple-600 font-bold border-2 border-purple-600 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-900/20 transition">
+                            Solicitar Plan Familiar
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -31,7 +31,11 @@
                     </div>
                     <div>
                         <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Categoría</label>
-                        <input type="text" name="categoria" required class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="Ropa, Accesorios...">
+                        <select name="categoria" required class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                            <option value="Ropa">Ropa</option>
+                            <option value="Accesorios">Accesorios</option>
+                            <option value="Coleccionables">Coleccionables</option>
+                        </select>
                     </div>
                 </div>
                 
@@ -46,8 +50,7 @@
                         <input type="number" step="0.01" name="precio" required class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Tallas (Separadas por comas)</label>
-                        <input type="text" name="tallas" class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="S, M, L">
+                        <!-- Tallas removed, managed via Inventario -->
                     </div>
                     <div>
                         <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Colores (Separados por comas)</label>
@@ -56,8 +59,8 @@
                 </div>
 
                 <div>
-                    <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">URL de Imagen</label>
-                    <input type="text" name="imagenUrl" class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="https://...">
+                    <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">URL de Imagen o SVG</label>
+                    <textarea name="imagenUrl" rows="3" class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="https://... o <svg>...</svg>"></textarea>
                 </div>
 
                 <button type="submit" class="px-6 py-2 font-bold text-white transition bg-purple-600 rounded-xl hover:bg-purple-700">Guardar Mercancía</button>
@@ -91,7 +94,7 @@
                                 <span class="px-2 py-1 text-xs font-bold text-red-700 bg-red-100 rounded-full dark:bg-red-500/10 dark:text-red-400">Inactivo</span>
                             {% endif %}
                         </td>
-                        <td class="p-4">
+                        <td class="p-4 flex gap-4 items-center">
                             <form action="{{ url_for('admin_mercancia') }}" method="POST">
                                 <input type="hidden" name="action" value="toggle">
                                 <input type="hidden" name="id" value="{{ m.id }}">
@@ -99,6 +102,20 @@
                                     {{ 'Desactivar' if m.activo else 'Activar' }}
                                 </button>
                             </form>
+                            <a href="{{ url_for('editar_mercancia', id=m.id) }}" class="text-sm font-bold text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300">
+                                Editar
+                            </a>
+                            <form action="{{ url_for('admin_mercancia') }}" method="POST" class="flex items-center gap-2">
+                                <input type="hidden" name="action" value="update_price">
+                                <input type="hidden" name="id" value="{{ m.id }}">
+                                <input type="number" step="0.01" name="precio" value="{{ "%.2f"|format(m.precio) }}" class="w-20 px-2 py-1 text-sm bg-gray-50 border border-gray-300 rounded dark:bg-[#1a1a24] dark:border-white/10 dark:text-white" required>
+                                <button type="submit" class="text-sm font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                                    Guardar
+                                </button>
+                            </form>
+                            <a href="{{ url_for('editar_mercancia', id=m.id) }}" class="text-sm font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                                Editar
+                            </a>
                         </td>
                     </tr>
                     {% endfor %}

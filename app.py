@@ -5,7 +5,12 @@ from models import db, Usuario, Evento, Noticia, Mercancia, PreguntaFrecuente, C
 app = Flask(__name__)
 app.secret_key = 'ticketnow_secret_key_flask'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pymssql://sa:MiloOreo06@localhost:1433/TicketsDB'
+database_url = os.environ.get('DATABASE_URL', 'sqlite:///local_db.sqlite')
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pymssql://sa:MiloOreo06@localhost:1433/TicketsDB'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -21,9 +26,11 @@ def index():
     eventos_db = Evento.query.filter_by(activo=True).order_by(Evento.fecha.asc()).limit(3).all()
     eventos = [{
         'id': e.id,
-        'cat': 'Eventos',
+        'cat': e.categoria,
         'tit': e.titulo,
-        'precio': f'${e.precio:.2f}',
+        'precio': f'${e.precio_desde:.2f}',
+        'fecha': e.fecha.strftime('%d %b %Y') if e.fecha else 'Por confirmar',
+        'lugar': e.lugar,
         'bg': 'from-purple-800 to-purple-400',
         'txt': 'text-purple-600 dark:text-purple-400',
         'tag': 'bg-purple-100 dark:bg-purple-600/20',
@@ -38,9 +45,13 @@ def index():
         'cat': m.categoria,
         'tit': m.titulo,
         'precio': f'${m.precio:.2f}',
+        'precio_raw': m.precio,
         'desc': m.descripcion,
-        'tallas': m.tallas.split(',') if m.tallas else [],
-        'col': m.colores.split(',') if m.colores else [],
+        'tallas': [
+            {'talla': inv.talla, 'stock': inv.stock}
+            for inv in m.inventario
+        ],
+        'total_stock': sum(inv.stock for inv in m.inventario),
         'imagen': m.imagenUrl
     } for m in mercancia_db]
 
@@ -109,16 +120,26 @@ def logout():
 def eventos():
     user = get_current_user()
     eventos_db = Evento.query.filter_by(activo=True).all()
-    eventos = [{
-        'id': e.id,
-        'cat': 'Eventos',
-        'tit': e.titulo,
-        'precio': f'${e.precio:.2f}',
-        'bg': 'from-purple-800 to-purple-400',
-        'txt': 'text-purple-600 dark:text-purple-400',
-        'tag': 'bg-purple-100 dark:bg-purple-600/20',
-        'imagen': e.imagenUrl
-    } for e in eventos_db]
+    eventos = []
+    colores = [
+        {"bg": "from-purple-800 to-purple-400", "txt": "text-purple-600 dark:text-purple-400", "tag": "bg-purple-100 dark:bg-purple-600/20"},
+        {"bg": "from-blue-800 to-blue-400", "txt": "text-blue-600 dark:text-blue-400", "tag": "bg-blue-100 dark:bg-blue-600/20"},
+        {"bg": "from-orange-800 to-orange-400", "txt": "text-orange-700 dark:text-orange-400", "tag": "bg-orange-100 dark:bg-orange-500/20"}
+    ]
+    for i, e in enumerate(eventos_db):
+        c = colores[i % len(colores)]
+        eventos.append({
+            'id': e.id,
+            'cat': e.categoria or 'Evento',
+            'tit': e.titulo,
+            'precio': f'${e.precio_desde:.2f}',
+            'bg': c['bg'],
+            'txt': c['txt'],
+            'tag': c['tag'],
+            'imagen': e.imagenUrl,
+            'fecha': e.fecha.strftime('%d %b %Y') if e.fecha else 'Por confirmar',
+            'lugar': e.lugar
+        })
     return render_template('eventos.html', usuario=user, eventos=eventos)
 
 @app.route('/noticias')
@@ -126,6 +147,12 @@ def noticias():
     user = get_current_user()
     noticias_db = Noticia.query.filter_by(activo=True).order_by(Noticia.fechaPub.desc()).all()
     return render_template('noticias.html', usuario=user, noticias=noticias_db)
+
+@app.route('/noticia/<int:id>')
+def noticia_detalle(id):
+    user = get_current_user()
+    noticia = Noticia.query.get_or_404(id)
+    return render_template('noticia_detalle.html', usuario=user, noticia=noticia)
 
 @app.route('/tienda')
 def tienda():
@@ -142,9 +169,9 @@ def tienda():
         c = colores[i % len(colores)]
         eventos.append({
             'id': e.id,
-            'cat': 'Evento',
+            'cat': e.categoria,
             'tit': e.titulo,
-            'precio': f'${e.precio:.2f}',
+            'precio': f'${e.precio_desde:.2f}',
             'bg': c['bg'],
             'txt': c['txt'],
             'tag': c['tag'],
@@ -157,9 +184,13 @@ def tienda():
         'cat': m.categoria,
         'tit': m.titulo,
         'precio': f'${m.precio:.2f}',
+        'precio_raw': m.precio,
         'desc': m.descripcion,
-        'tallas': m.tallas.split(',') if m.tallas else [],
-        'col': m.colores.split(',') if m.colores else [],
+        'tallas': [
+            {'talla': inv.talla, 'stock': inv.stock}
+            for inv in m.inventario
+        ],
+        'total_stock': sum(inv.stock for inv in m.inventario),
         'imagen': m.imagenUrl
     } for m in mercancia_db]
 
@@ -173,15 +204,21 @@ def detalle_evento(id):
         'id': evento_db.id,
         'cat': 'Concierto',
         'tit': evento_db.titulo,
-        'precio': f'${evento_db.precio:.2f}',
-        'precio_raw': evento_db.precio,
+        'precio': f'${evento_db.precio_desde:.2f}',
+        'precio_raw': evento_db.precio_desde,
         'desc': evento_db.descripcion,
         'fecha': evento_db.fecha.strftime('%d %B %Y') if evento_db.fecha else '15 Agosto 2026',
         'hora': evento_db.fecha.strftime('%H:%M') if evento_db.fecha else '20:00',
         'lugar': evento_db.lugar,
-        'imagen': evento_db.imagenUrl
+        'imagen': evento_db.imagenUrl,
+        'tipos': evento_db.tiposBoleto
     }
     return render_template('detalle_evento.html', usuario=user, evento=ev)
+
+@app.route('/precios-vip')
+def precios_vip():
+    user = get_current_user()
+    return render_template('precios_vip.html', usuario=user)
 
 @app.route('/ayuda')
 def ayuda():
@@ -336,10 +373,22 @@ def admin_eventos():
                     descripcion=request.form.get('descripcion'),
                     fecha=fecha_obj,
                     lugar=request.form.get('lugar'),
-                    precio=float(request.form.get('precio')),
+                    categoria=request.form.get('categoria'),
                     imagenUrl=request.form.get('imagenUrl')
                 )
                 db.session.add(e)
+                db.session.flush()
+                
+                # Create a default ticket type
+                precio_val = float(request.form.get('precio') or 0)
+                tb = TipoBoleto(
+                    evento_id=e.id,
+                    nombre="General",
+                    precio=precio_val,
+                    capacidad=100,
+                    disponibles=100
+                )
+                db.session.add(tb)
                 db.session.commit()
                 log_auditoria("Agregar Evento", "Evento", f"ID: {e.id}")
                 flash("Evento agregado exitosamente")
@@ -388,6 +437,23 @@ def admin_noticias():
     noticias = Noticia.query.order_by(Noticia.fechaPub.desc()).all()
     return render_template('admin/noticias.html', usuario=user, noticias=noticias)
 
+@app.route('/admin/noticia/editar/<int:id>', methods=['GET', 'POST'])
+def editar_noticia(id):
+    user = get_current_user()
+    if not user or user.rol != 'admin': return redirect(url_for('index'))
+    
+    n = Noticia.query.get_or_404(id)
+    if request.method == 'POST':
+        n.titulo = request.form.get('titulo')
+        n.contenido = request.form.get('contenido')
+        n.imagenUrl = request.form.get('imagenUrl')
+        db.session.commit()
+        log_auditoria("Editar Noticia", "Noticia", f"ID: {n.id}")
+        flash("Noticia actualizada")
+        return redirect(url_for('admin_noticias'))
+        
+    return render_template('admin/editar_noticia.html', usuario=user, noticia=n)
+
 @app.route('/admin/faqs', methods=['GET', 'POST'])
 def admin_faqs():
     user = get_current_user()
@@ -430,7 +496,6 @@ def admin_mercancia():
                 descripcion=request.form.get('descripcion'),
                 precio=float(request.form.get('precio')),
                 categoria=request.form.get('categoria'),
-                tallas=request.form.get('tallas'),
                 colores=request.form.get('colores'),
                 imagenUrl=request.form.get('imagenUrl')
             )

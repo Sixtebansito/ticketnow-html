@@ -3,92 +3,7 @@
 {% block content %}
 <main class="pt-32 pb-20 min-h-screen bg-gray-50 dark:bg-[#0a0a0e] transition-colors duration-300">
     
-    <section class="px-6 mx-auto mb-20 max-w-7xl">
-        <h2 class="mb-2 text-3xl font-extrabold text-gray-900 dark:text-white">Buscar Eventos</h2>
-        <p class="mb-6 text-sm text-gray-600 dark:text-gray-400">Explora conciertos, obras de teatro y eventos deportivos.</p>
 
-        <section class="max-w-7xl mx-auto px-6 mt-4 mb-16 transition-colors duration-300 buscador-inteligente" 
-            data-es-index="false"
-            data-redirect="/eventos"
-            data-target=".group">
-            
-            <div class="flex flex-col lg:flex-row items-center gap-4 w-full">
-                <div class="relative w-full grow">
-                    <svg class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                    
-                    <input type="text" placeholder="Busca artista, evento y presiona Enter..." 
-                        class="input-buscador w-full bg-white dark:bg-[#12121a] border border-gray-300 dark:border-white/5 rounded-full py-4 pl-12 pr-28 md:pr-32 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition shadow-sm dark:shadow-none"
-                    >
-                </div>
-
-                <div class="flex gap-3 overflow-x-auto w-full lg:w-auto pb-2 lg:pb-0 items-center" style="scrollbar-width: none;">
-                    <button class="btn-filtro bg-purple-600 text-white px-6 py-3 rounded-full text-sm font-semibold whitespace-nowrap transition shadow-lg shadow-purple-500/20" data-cat="todos">
-                        Todos
-                    </button>
-                    <button class="btn-filtro bg-gray-200 dark:bg-[#1a1a24] text-gray-700 dark:text-gray-300 px-6 py-3 rounded-full text-sm font-medium whitespace-nowrap transition hover:bg-gray-300 dark:hover:bg-[#252530]" data-cat="conciertos">
-                        Conciertos
-                    </button>
-                    <button class="btn-filtro bg-gray-200 dark:bg-[#1a1a24] text-gray-700 dark:text-gray-300 px-6 py-3 rounded-full text-sm font-medium whitespace-nowrap transition hover:bg-gray-300 dark:hover:bg-[#252530]" data-cat="teatro">
-                        Teatro
-                    </button>
-                    <button class="btn-filtro bg-gray-200 dark:bg-[#1a1a24] text-gray-700 dark:text-gray-300 px-6 py-3 rounded-full text-sm font-medium whitespace-nowrap transition hover:bg-gray-300 dark:hover:bg-[#252530]" data-cat="deportes">
-                        Deportes
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <div class="grid grid-cols-1 gap-6 mt-8 mb-8 md:grid-cols-3">
-            {% for ev in eventos %}
-            <div class="group relative rounded-4xl overflow-hidden shadow-md hover:shadow-2xl dark:hover:shadow-purple-900/20 transition-all duration-500 flex flex-col h-[420px] w-full border border-gray-200/50 dark:border-white/5">
-                {% if ev.imagen %}
-                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image: url('{{ ev.imagen }}');"></div>
-                {% else %}
-                    <div class="absolute inset-0 bg-gradient-to-br {{ ev.bg }} transition-transform duration-700 group-hover:scale-110"></div>
-                {% endif %}
-
-                <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0e] via-[#0a0a0e]/60 to-transparent opacity-95"></div>
-
-                <div class="absolute top-6 w-full flex justify-center z-10">
-                    <span class="px-4 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest {{ ev.tag }} {{ ev.txt }} backdrop-blur-md shadow-sm">
-                        {{ ev.cat }}
-                    </span>
-                </div>
-
-                <div class="relative z-10 p-6 md:p-8 flex flex-col h-full justify-end items-center text-center mt-auto">
-                    <a href="/detalle-evento/{{ ev.id }}" class="hover:text-purple-400 transition-colors">
-                        <h3 class="text-2xl md:text-3xl font-extrabold text-white mb-2 leading-tight drop-shadow-md">{{ ev.tit }}</h3>
-                    </a>
-                    <p class="text-gray-300 text-xs md:text-sm mb-6 font-medium drop-shadow">15 Agosto 2026 • Estadio Atahualpa</p>
-                    
-                    <div class="w-full flex flex-col items-center gap-5">
-                        <span class="text-3xl font-black text-white drop-shadow-md">{{ ev.precio }}</span>
-                        
-                        <div class="flex w-full gap-3 justify-center">
-                            <a href="/detalle-evento/{{ ev.id }}" class="w-1/2 py-3 rounded-xl text-xs font-bold border border-white/20 text-white hover:bg-white/10 transition flex items-center justify-center backdrop-blur-sm">
-                                Ver Detalles
-                            </a>
-                            
-                            <button class="btn-comprar-evento w-1/2 bg-purple-600 hover:bg-purple-500 text-white py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-purple-600/40"
-                                data-id="{{ ev.id }}" 
-                                data-title="{{ ev.tit }}" 
-                                data-price="{{ ev.precio|replace('$', '') }}" 
-                                data-category="{{ ev.cat }}">
-                                Comprar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-
-        <div class="text-center">
-            <a href="/eventos" class="inline-block px-8 py-3 text-sm font-bold text-purple-600 transition bg-transparent border border-purple-600 rounded-full dark:text-purple-400 hover:bg-purple-600 hover:text-white">Ver todos los eventos</a>
-        </div>
-    </section>
 
     <section class="px-6 mx-auto max-w-7xl">
         <h2 class="mb-2 text-3xl font-extrabold text-gray-900 dark:text-white">Buscar Mercancía Oficial</h2>
@@ -96,7 +11,6 @@
 
         <section class="max-w-7xl mx-auto px-6 mt-4 mb-16 transition-colors duration-300 buscador-inteligente" 
             data-es-index="false"
-            data-redirect="/mercancia"
             data-target=".group">
             
             <div class="flex flex-col lg:flex-row items-center gap-4 w-full">
@@ -130,7 +44,8 @@
         <div class="grid grid-cols-1 gap-6 mt-8 mb-8 md:grid-cols-3">
             {% for prod in mercancia %}
             <div class="group relative bg-white dark:bg-[#12121a] rounded-3xl overflow-hidden shadow-sm dark:shadow-none border border-gray-200 dark:border-white/5 hover:border-purple-500/30 transition-all duration-300 flex flex-col p-6 w-full h-100"
-                data-id="{{ prod.tit|lower|replace(' ', '-') }}" data-title="{{ prod.tit }}" data-price="{{ prod.precio|replace('$', '') }}" data-category="{{ prod.cat }}">
+                data-id="{{ prod.id }}" data-title="{{ prod.tit }}" data-price="{{ prod.precio_raw }}" data-category="{{ prod.cat }}">
+                
                 <div class="absolute top-6 left-6 z-10 flex gap-2">
                     <span class="px-3 py-1 bg-gray-100 dark:bg-[#1a1a24] text-gray-600 dark:text-gray-400 text-[10px] font-bold rounded-full border border-gray-200 dark:border-white/10 uppercase tracking-wider">
                         {{ prod.cat }}
@@ -139,9 +54,21 @@
                 
                 <div class="w-full h-48 bg-gray-100 dark:bg-[#0a0a0e] rounded-2xl mb-6 flex items-center justify-center relative overflow-hidden">
                     {% if prod.imagen %}
-                        <img src="{{ prod.imagen }}" alt="{{ prod.tit }}" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110">
+                        {% if '<svg' in prod.imagen %}
+                            <div class="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:object-cover transition-transform duration-500 group-hover:scale-110 {% if prod.total_stock == 0 %}grayscale opacity-60{% endif %}">
+                                {{ prod.imagen|safe }}
+                            </div>
+                        {% else %}
+                            <img src="{{ prod.imagen }}" alt="{{ prod.tit }}" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110 {% if prod.total_stock == 0 %}grayscale opacity-60{% endif %}">
+                        {% endif %}
                     {% else %}
-                        <svg class="w-16 h-16 text-gray-300 dark:text-gray-700 transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                        <img src="https://images.unsplash.com/photo-1555529771-835f59bfc50c?w=800" alt="TicketNow Merch" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110 {% if prod.total_stock == 0 %}grayscale opacity-60{% endif %}">
+                    {% endif %}
+                    
+                    {% if prod.total_stock == 0 %}
+                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
+                            <span class="bg-red-600 text-white font-black text-xl px-4 py-2 border-2 border-red-800 rounded uppercase tracking-widest transform -rotate-12">AGOTADO</span>
+                        </div>
                     {% endif %}
                 </div>
 
@@ -150,20 +77,32 @@
                     <p class="text-gray-500 dark:text-gray-400 text-sm mb-4 line-clamp-2">{{ prod.desc }}</p>
                     
                     <div class="mt-auto">
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            {% for talla in prod.tallas %}
-                            <span class="px-2 py-1 bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 rounded text-[10px] font-bold border border-gray-200 dark:border-white/5">{{ talla }}</span>
-                            {% endfor %}
-                            <div class="flex items-center gap-1 ml-auto">
-                                {% for col in prod.col %}
-                                <div class="w-4 h-4 rounded-full border border-gray-300 dark:border-white/20 shadow-sm" style="background-color: {{ col }};"></div>
+                        {% if prod.total_stock > 0 and prod.total_stock < 5 %}
+                            <div class="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400 text-xs font-bold px-3 py-1.5 rounded-lg mb-3 flex items-center gap-2 border border-orange-200 dark:border-orange-800/50">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                ATENCIÓN, SOLO QUEDAN {{ prod.total_stock }} RESTANTES
+                            </div>
+                        {% endif %}
+                        
+                        <div class="flex flex-col gap-2 mb-4">
+                            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tallas Disponibles:</span>
+                            <div class="flex flex-wrap gap-2 size-selector-{{ prod.id }}">
+                                {% for inv in prod.tallas %}
+                                    <label class="cursor-pointer relative group">
+                                        <input type="radio" name="talla_{{ prod.id }}" value="{{ inv.talla }}" class="peer sr-only" {% if inv.stock == 0 %}disabled{% endif %}>
+                                        <span class="flex items-center justify-center px-3 py-1.5 min-w-[2.5rem] bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded border border-gray-200 dark:border-white/10 text-xs font-bold transition-all peer-checked:bg-purple-600 peer-checked:text-white peer-checked:border-purple-600 peer-disabled:opacity-40 peer-disabled:cursor-not-allowed hover:border-purple-400">
+                                            {{ inv.talla }}
+                                        </span>
+                                    </label>
+                                {% else %}
+                                    <span class="text-xs text-gray-500">Única</span>
                                 {% endfor %}
                             </div>
                         </div>
                         
                         <div class="flex items-center justify-between mt-4">
                             <span class="text-2xl font-black text-gray-900 dark:text-white">{{ prod.precio }}</span>
-                            <button class="btn-comprar-producto w-10 h-10 rounded-full bg-gray-900 dark:bg-white text-white dark:text-black flex items-center justify-center hover:bg-purple-600 dark:hover:bg-purple-400 hover:text-white dark:hover:text-white transition shadow-md hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-1">
+                            <button {% if prod.total_stock == 0 %}disabled{% endif %} class="btn-comprar-merch w-10 h-10 rounded-full {% if prod.total_stock == 0 %}bg-gray-300 dark:bg-gray-700 cursor-not-allowed{% else %}bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-purple-600 dark:hover:bg-purple-400 hover:text-white dark:hover:text-white shadow-md hover:shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-1{% endif %} flex items-center justify-center transition" data-id="{{ prod.id }}" data-nombre="{{ prod.tit }}" data-precio="{{ prod.precio_raw }}">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
                             </button>
                         </div>
@@ -174,7 +113,7 @@
         </div>
 
         <div class="text-center">
-            <a href="/mercancia" class="inline-block px-8 py-3 text-sm font-bold text-purple-600 transition bg-transparent border border-purple-600 rounded-full dark:text-purple-400 hover:bg-purple-600 hover:text-white">Ver toda la mercancía</a>
+            <a href="/tienda" class="inline-block px-8 py-3 text-sm font-bold text-purple-600 transition bg-transparent border border-purple-600 rounded-full dark:text-purple-400 hover:bg-purple-600 hover:text-white">Ver toda la mercancía</a>
         </div>
     </section>
 
@@ -214,8 +153,8 @@
 
                 const tarjetas = document.querySelectorAll(targetSelector);
                 tarjetas.forEach(tarjeta => {
-                    const tituloCard = tarjeta.getAttribute('data-title') || '';
-                    const categoriaCard = tarjeta.getAttribute('data-category') || '';
+                    const tituloCard = (tarjeta.getAttribute('data-title') || '').toLowerCase();
+                    const categoriaCard = (tarjeta.getAttribute('data-category') || '').toLowerCase();
                     const coincideTexto = tituloCard.includes(texto);
                     const coincideCategoria = catActiva === 'todos' || categoriaCard === catActiva || categoriaCard.includes(catActiva);
 
@@ -255,7 +194,7 @@
     };
 
     const initBotonesEventoYProducto = () => {
-        const botones = document.querySelectorAll('.btn-comprar-evento, .btn-comprar-producto');
+        const botones = document.querySelectorAll('.btn-comprar-evento, .btn-comprar-merch');
         botones.forEach(boton => {
             const newBtn = boton.cloneNode(true);
             boton.parentNode.replaceChild(newBtn, boton);
@@ -263,14 +202,34 @@
             newBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 let btn = e.target.closest('button');
-                const isProducto = btn.classList.contains('btn-comprar-producto');
+                if (btn.disabled) return; // Si está agotado
+                
+                const isProducto = btn.classList.contains('btn-comprar-merch');
                 const tarjeta = btn.closest('.group');
                 
-                const id = isProducto ? tarjeta.getAttribute('data-id') : btn.getAttribute('data-id');
-                const title = isProducto ? tarjeta.getAttribute('data-title') : btn.getAttribute('data-title');
-                const priceStr = isProducto ? tarjeta.getAttribute('data-price') : btn.getAttribute('data-price');
-                const category = isProducto ? tarjeta.getAttribute('data-category') : btn.getAttribute('data-category');
+                const id = btn.getAttribute('data-id');
+                const title = btn.getAttribute('data-nombre');
+                const priceStr = btn.getAttribute('data-precio');
                 const price = parseFloat(priceStr || '0');
+                
+                let selectedTalla = null;
+                if (isProducto) {
+                    const tallaRadios = tarjeta.querySelectorAll(`input[name="talla_${id}"]`);
+                    if (tallaRadios.length > 0) {
+                        if (tallaRadios.length === 1) {
+                            selectedTalla = tallaRadios[0].value;
+                        } else {
+                            const checkedRadio = tarjeta.querySelector(`input[name="talla_${id}"]:checked`);
+                            if (!checkedRadio) {
+                                alert('Por favor, selecciona una talla antes de añadir al carrito.');
+                                return;
+                            }
+                            selectedTalla = checkedRadio.value;
+                        }
+                    } else {
+                        selectedTalla = 'Única';
+                    }
+                }
 
                 if (!isProducto) {
                     const textoOriginal = btn.textContent;
@@ -307,15 +266,16 @@
 
                 const item = {
                     id: id,
-                    title: title,
+                    talla: selectedTalla,
+                    title: title + (selectedTalla ? ` (Talla: ${selectedTalla})` : ''),
                     price: price,
-                    category: category,
+                    category: isProducto ? 'Mercancía' : 'Evento',
                     type: isProducto ? 'mercancia' : 'evento',
                     quantity: 1
                 };
 
                 let cart = JSON.parse(localStorage.getItem('ticketnow_cart') || '[]');
-                const existingIndex = cart.findIndex(i => i.id === item.id);
+                const existingIndex = cart.findIndex(i => i.id === item.id && i.talla === item.talla);
                 if (existingIndex > -1) cart[existingIndex].quantity += 1;
                 else cart.push(item);
                 localStorage.setItem('ticketnow_cart', JSON.stringify(cart));

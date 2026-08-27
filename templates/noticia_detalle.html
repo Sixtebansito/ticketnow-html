@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="min-h-screen pt-24 pb-16 text-gray-800 bg-gray-50 dark:bg-gray-900 dark:text-gray-100">
+    <div class="container px-4 py-12 mx-auto sm:px-6 lg:px-8 max-w-4xl">
+        <a href="{{ url_for('noticias') }}" class="inline-flex items-center text-sm text-purple-600 dark:text-purple-400 hover:underline mb-8">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Volver a Noticias
+        </a>
+
+        <article class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
+            {% if noticia.imagenUrl %}
+            <div class="relative h-64 sm:h-80 md:h-96 w-full flex items-center justify-center overflow-hidden">
+                {% if '<svg' in noticia.imagenUrl %}
+                    <div class="absolute inset-0 [&>svg]:w-full [&>svg]:h-full [&>svg]:object-cover">
+                        {{ noticia.imagenUrl|safe }}
+                    </div>
+                {% else %}
+                    <img src="{{ noticia.imagenUrl }}" alt="{{ noticia.titulo }}" class="absolute inset-0 object-cover w-full h-full">
+                {% endif %}
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
+                <div class="absolute bottom-0 left-0 p-6 sm:p-8">
+                    <span class="px-3 py-1 text-xs font-semibold tracking-wider text-white uppercase bg-purple-600 rounded-full">Noticia</span>
+                    <h1 class="mt-4 text-3xl font-bold text-white sm:text-4xl md:text-5xl">{{ noticia.titulo }}</h1>
+                    <div class="flex items-center mt-4 text-sm text-gray-300">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <time datetime="{{ noticia.fechaPub.strftime('%Y-%m-%d') }}">{{ noticia.fechaPub.strftime('%d de %B, %Y') }}</time>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="p-6 sm:p-8 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                <span class="px-3 py-1 text-xs font-semibold tracking-wider text-purple-700 uppercase bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400 rounded-full">Noticia</span>
+                <h1 class="mt-4 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl md:text-5xl">{{ noticia.titulo }}</h1>
+                <div class="flex items-center mt-4 text-sm text-gray-500 dark:text-gray-400">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <time datetime="{{ noticia.fechaPub.strftime('%Y-%m-%d') }}">{{ noticia.fechaPub.strftime('%d de %B, %Y') }}</time>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="p-6 sm:p-8 lg:p-10 prose prose-purple dark:prose-invert max-w-none">
+                {% if noticia.resumen %}
+                <p class="text-xl leading-relaxed text-gray-600 dark:text-gray-300 mb-8 font-medium italic border-l-4 border-purple-500 pl-4">
+                    {{ noticia.resumen }}
+                </p>
+                {% endif %}
+                
+                <div class="text-gray-700 dark:text-gray-300 leading-loose whitespace-pre-line">
+                    {{ noticia.contenido }}
+                </div>
+            </div>
+        </article>
+    </div>
+</main>
+{% endblock %}

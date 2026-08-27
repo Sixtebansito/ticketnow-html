@@ -18,17 +18,29 @@
 
         {% if noticiaPrincipal %}
         <div class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 rounded-3xl overflow-hidden shadow-sm dark:shadow-none group flex flex-col md:flex-row transition-colors">
-            <div class="w-full h-64 transition duration-500 origin-center md:w-1/2 md:h-auto bg-gradient-to-br from-purple-800 to-indigo-900 group-hover:scale-105" {% if noticiaPrincipal.imagenUrl %}style="background-image: url('{{ noticiaPrincipal.imagenUrl }}'); background-size: cover; background-position: center;"{% endif %}></div>
+            <div class="w-full h-64 md:w-1/2 md:h-auto overflow-hidden bg-gradient-to-br from-purple-800 to-indigo-900">
+                {% if noticiaPrincipal.imagenUrl %}
+                    {% if '<svg' in noticiaPrincipal.imagenUrl %}
+                        <div class="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:object-cover transition duration-500 origin-center group-hover:scale-105">
+                            {{ noticiaPrincipal.imagenUrl|safe }}
+                        </div>
+                    {% else %}
+                        <div class="w-full h-full bg-cover bg-center transition duration-500 origin-center group-hover:scale-105" style="background-image: url('{{ noticiaPrincipal.imagenUrl }}');"></div>
+                    {% endif %}
+                {% else %}
+                    <div class="w-full h-full transition duration-500 origin-center group-hover:scale-105"></div>
+                {% endif %}
+            </div>
             
             <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center z-10 bg-white dark:bg-[#12121a]">
                 <span class="inline-block px-3 py-1 mb-6 text-xs font-bold tracking-widest text-purple-600 bg-purple-100 rounded-full dark:bg-purple-600/20 dark:text-purple-400 w-max">EXCLUSIVA</span>
                 <h2 class="mb-4 text-3xl font-bold text-gray-900 dark:text-white">{{ noticiaPrincipal.titulo }}</h2>
                 <p class="mb-8 leading-relaxed text-gray-600 dark:text-gray-400">
-                    {{ noticiaPrincipal.contenido[:150] }}...
+                    {{ noticiaPrincipal.resumen or noticiaPrincipal.contenido[:150] }}...
                 </p>
-                <button class="px-8 py-3 text-sm font-bold text-white transition bg-purple-600 rounded-full shadow-lg hover:bg-purple-700 shadow-purple-600/20 w-max">
+                <a href="{{ url_for('noticia_detalle', id=noticiaPrincipal.id) }}" class="inline-block px-8 py-3 text-sm font-bold text-white transition bg-purple-600 rounded-full shadow-lg hover:bg-purple-700 shadow-purple-600/20 w-max">
                     Leer artículo completo
-                </button>
+                </a>
             </div>
         </div>
         {% else %}
@@ -42,11 +54,28 @@
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {% if otrasNoticias %}
                 {% for noticia in otrasNoticias %}
-                <article class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 p-6 rounded-2xl shadow-sm dark:shadow-none hover:border-purple-500/30 dark:hover:border-purple-500/30 transition group flex flex-col h-full">
-                    <span class="inline-block px-3 py-1 mb-4 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full dark:bg-blue-500/20 dark:text-blue-400 w-max">NOTICIA</span>
-                    <h4 class="mb-3 text-xl font-bold text-gray-900 transition dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">{{ noticia.titulo }}</h4>
-                    <p class="mb-6 text-sm text-gray-600 dark:text-gray-400 grow">{{ noticia.contenido[:100] }}...</p>
-                    <a href="#" class="flex items-center gap-2 text-sm font-semibold text-purple-600 dark:text-purple-400">Leer más <span class="transition-transform group-hover:translate-x-1">→</span></a>
+                <article class="bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 rounded-2xl shadow-sm dark:shadow-none hover:shadow-xl dark:hover:shadow-purple-900/20 hover:border-purple-500/30 dark:hover:border-purple-500/30 transition-all duration-300 group flex flex-col h-full overflow-hidden">
+                    {% if noticia.imagenUrl %}
+                    <div class="w-full h-48 overflow-hidden relative">
+                        {% if '<svg' in noticia.imagenUrl %}
+                            <div class="absolute inset-0 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>svg]:object-cover transition-transform duration-700 group-hover:scale-110">
+                                {{ noticia.imagenUrl|safe }}
+                            </div>
+                        {% else %}
+                            <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image: url('{{ noticia.imagenUrl }}');"></div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="flex items-center justify-center w-full h-48 bg-gray-100 dark:bg-[#1a1a24]">
+                        <svg class="w-12 h-12 text-gray-300 dark:text-gray-700 transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5L18.5 7H20"></path></svg>
+                    </div>
+                    {% endif %}
+                    <div class="p-6 flex flex-col flex-grow">
+                        <span class="inline-block px-3 py-1 mb-4 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full dark:bg-blue-500/20 dark:text-blue-400 w-max">NOTICIA</span>
+                        <h4 class="mb-3 text-xl font-bold text-gray-900 transition dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">{{ noticia.titulo }}</h4>
+                        <p class="mb-6 text-sm text-gray-600 dark:text-gray-400 grow">{{ noticia.resumen or noticia.contenido[:100] }}...</p>
+                        <a href="{{ url_for('noticia_detalle', id=noticia.id) }}" class="mt-auto flex items-center gap-2 text-sm font-semibold text-purple-600 dark:text-purple-400">Leer más <span class="transition-transform group-hover:translate-x-1">→</span></a>
+                    </div>
                 </article>
                 {% endfor %}
             {% else %}

@@ -48,7 +48,7 @@
                             <script>
                                 localStorage.removeItem('ticketnow_cart');
                                 window.dispatchEvent(new Event('storage'));
-                                setTimeout(() => window.location.href = '/ticketapp', 1500);
+                                setTimeout(() => window.location.href = '/precios-vip', 1500);
                             </script>
                         </div>
                     {% endif %}
@@ -130,7 +130,7 @@
                     <div class="flex items-center justify-between p-5 bg-white dark:bg-[#12121a] border border-gray-200 dark:border-white/5 rounded-2xl">
                         <div class="flex-grow pr-4">
                             <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded mb-1 inline-block ${badgeColor}">
-                                ${item.category}
+                                ${item.category || (item.type === 'evento' ? 'Evento' : 'Mercancía')}
                             </span>
                             <h3 class="font-bold text-gray-900 dark:text-white text-base md:text-lg leading-tight">${item.title}</h3>
                             <p class="text-purple-600 dark:text-purple-400 font-bold text-sm mt-1">$${item.price.toFixed(2)} c/u</p>
