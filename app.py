@@ -223,6 +223,24 @@ def detalle_evento(id):
     }
     return render_template('detalle_evento.html', usuario=user, evento=ev)
 
+
+@app.route('/setup-db')
+def setup_db():
+    try:
+        from sqlalchemy import text
+        # Intentar añadir columnas a las tablas si no existen
+        db.session.execute(text("ALTER TABLE evento ADD COLUMN IF NOT EXISTS categoria VARCHAR(255);"))
+        db.session.execute(text("ALTER TABLE mercancia ADD COLUMN IF NOT EXISTS categoria VARCHAR(255);"))
+        
+        # También asegurar que imagenUrl esté en mercancia si no estaba
+        db.session.execute(text("ALTER TABLE mercancia ADD COLUMN IF NOT EXISTS imagen_url VARCHAR(255);"))
+        
+        db.session.commit()
+        return "Base de datos actualizada correctamente. <a href='/'>Volver al inicio</a>"
+    except Exception as e:
+        db.session.rollback()
+        return f"Error actualizando la base de datos: {str(e)}"
+
 @app.route('/precios-vip')
 def precios_vip():
     user = get_current_user()
