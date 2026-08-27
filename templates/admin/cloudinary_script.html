@@ -1,0 +1,52 @@
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const fileInputs = document.querySelectorAll('.cloudinary-upload');
+        const CLOUD_NAME = 'YOUR_CLOUD_NAME'; // TODO: Update with actual cloud name
+        const UPLOAD_PRESET = 'YOUR_UPLOAD_PRESET'; // TODO: Update with actual unsigned upload preset
+
+        fileInputs.forEach(input => {
+            input.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const targetInputId = input.dataset.target;
+                const targetInput = document.getElementById(targetInputId);
+                const statusSpan = document.getElementById(input.id + '-status');
+
+                if(statusSpan) {
+                    statusSpan.textContent = "Subiendo...";
+                    statusSpan.className = "text-sm font-medium text-blue-500 mt-1 block";
+                }
+
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', UPLOAD_PRESET);
+
+                try {
+                    const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.secure_url) {
+                        targetInput.value = data.secure_url;
+                        if(statusSpan) {
+                            statusSpan.textContent = "¡Subida exitosa!";
+                            statusSpan.className = "text-sm font-medium text-green-500 mt-1 block";
+                        }
+                    } else {
+                        throw new Error(data.error?.message || 'Error al subir');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    if(statusSpan) {
+                        statusSpan.textContent = "Error: " + err.message + ". Verifica CLOUD_NAME y UPLOAD_PRESET en templates/admin/cloudinary_script.html";
+                        statusSpan.className = "text-sm font-medium text-red-500 mt-1 block";
+                    }
+                }
+            });
+        });
+    });
+</script>

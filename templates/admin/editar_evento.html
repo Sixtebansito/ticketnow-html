@@ -35,7 +35,12 @@
 
                 <div>
                     <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Categoría</label>
-                    <input type="text" name="categoria" value="{{ evento.categoria or 'Evento' }}" placeholder="Concierto, Teatro, Deportes..." required class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                    <input list="categorias-eventos" name="categoria" value="{{ evento.categoria or 'Evento' }}" required class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                    <datalist id="categorias-eventos">
+                        {% for cat in categorias %}
+                        <option value="{{ cat }}">
+                        {% endfor %}
+                    </datalist>
                 </div>
                 
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -44,8 +49,15 @@
                         <input type="datetime-local" name="fecha" value="{{ evento.fecha.strftime('%Y-%m-%dT%H:%M') if evento.fecha else '' }}" required class="w-full px-4 py-3 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">URL de Imagen o SVG</label>
-                        <textarea name="imagenUrl" rows="2" class="w-full px-4 py-3 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="https://... o <svg>...</svg>">{{ evento.imagenUrl or '' }}</textarea>
+                        <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Imagen</label>
+                        <div class="flex flex-col gap-2">
+                            <!-- Botón para subir imagen -->
+                            <input type="file" id="file-evento-edit" accept="image/*" class="cloudinary-upload block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 dark:file:bg-purple-900/30 dark:file:text-purple-400" data-target="imagenUrl-evento-edit">
+                            <span id="file-evento-edit-status"></span>
+                            
+                            <!-- URL de Imagen generada o pegada -->
+                            <textarea id="imagenUrl-evento-edit" name="imagenUrl" rows="4" class="w-full px-4 py-2 text-gray-900 bg-gray-50 border border-gray-300 rounded-xl dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="La URL aparecerá aquí automáticamente después de subir, o puedes pegar una manualmente">{{ evento.imagenUrl or '' }}</textarea>
+                        </div>
                     </div>
                 </div>
 
@@ -89,7 +101,7 @@
         </div>
     </div>
 </main>
-
+{% include 'admin/cloudinary_script.html' %}
 <script>
     function agregarBoleto() {
         const container = document.getElementById('boletos-container');

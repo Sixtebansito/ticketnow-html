@@ -28,15 +28,11 @@
                     <button class="btn-filtro bg-purple-600 text-white px-6 py-3 rounded-full text-sm font-semibold whitespace-nowrap transition shadow-lg shadow-purple-500/20" data-cat="todos">
                         Todos
                     </button>
-                    <button class="btn-filtro bg-gray-200 dark:bg-[#1a1a24] text-gray-700 dark:text-gray-300 px-6 py-3 rounded-full text-sm font-medium whitespace-nowrap transition hover:bg-gray-300 dark:hover:bg-[#252530]" data-cat="ropa">
-                        Ropa
+                    {% for cat in categorias_mercancia %}
+                    <button class="btn-filtro bg-gray-200 dark:bg-[#1a1a24] text-gray-700 dark:text-gray-300 px-6 py-3 rounded-full text-sm font-medium whitespace-nowrap transition hover:bg-gray-300 dark:hover:bg-[#252530]" data-cat="{{ cat|lower }}">
+                        {{ cat }}
                     </button>
-                    <button class="btn-filtro bg-gray-200 dark:bg-[#1a1a24] text-gray-700 dark:text-gray-300 px-6 py-3 rounded-full text-sm font-medium whitespace-nowrap transition hover:bg-gray-300 dark:hover:bg-[#252530]" data-cat="accesorios">
-                        Accesorios
-                    </button>
-                    <button class="btn-filtro bg-gray-200 dark:bg-[#1a1a24] text-gray-700 dark:text-gray-300 px-6 py-3 rounded-full text-sm font-medium whitespace-nowrap transition hover:bg-gray-300 dark:hover:bg-[#252530]" data-cat="coleccionables">
-                        Coleccionables
-                    </button>
+                    {% endfor %}
                 </div>
             </div>
         </section>
@@ -48,7 +44,7 @@
                 
                 <div class="absolute top-6 left-6 z-10 flex gap-2">
                     <span class="px-3 py-1 bg-gray-100 dark:bg-[#1a1a24] text-gray-600 dark:text-gray-400 text-[10px] font-bold rounded-full border border-gray-200 dark:border-white/10 uppercase tracking-wider">
-                        {{ prod.cat }}
+                        {{ prod.cat|upper }}
                     </span>
                 </div>
                 

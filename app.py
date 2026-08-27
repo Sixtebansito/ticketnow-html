@@ -140,7 +140,11 @@ def eventos():
             'fecha': e.fecha.strftime('%d %b %Y') if e.fecha else 'Por confirmar',
             'lugar': e.lugar
         })
-    return render_template('eventos.html', usuario=user, eventos=eventos)
+        
+    # Obtener categorías únicas de eventos
+    categorias_eventos = [r[0] for r in db.session.query(Evento.categoria).distinct().filter(Evento.categoria != None, Evento.categoria != '').all()]
+    
+    return render_template('eventos.html', usuario=user, eventos=eventos, categorias=categorias_eventos)
 
 @app.route('/noticias')
 def noticias():
@@ -194,7 +198,11 @@ def tienda():
         'imagen': m.imagenUrl
     } for m in mercancia_db]
 
-    return render_template('tienda.html', usuario=user, eventos=eventos, mercancia=mercancia)
+    # Obtener categorías únicas de mercancía y eventos
+    categorias_mercancia = [r[0] for r in db.session.query(Mercancia.categoria).distinct().filter(Mercancia.categoria != None, Mercancia.categoria != '').all()]
+    categorias_eventos = [r[0] for r in db.session.query(Evento.categoria).distinct().filter(Evento.categoria != None, Evento.categoria != '').all()]
+
+    return render_template('tienda.html', usuario=user, eventos=eventos, mercancia=mercancia, categorias_mercancia=categorias_mercancia, categorias_eventos=categorias_eventos)
 
 @app.route('/detalle-evento/<int:id>')
 def detalle_evento(id):
@@ -405,7 +413,8 @@ def admin_eventos():
         return redirect(url_for('admin_eventos'))
 
     eventos = Evento.query.order_by(Evento.fecha.desc()).all()
-    return render_template('admin/eventos.html', usuario=user, eventos=eventos)
+    categorias = [r[0] for r in db.session.query(Evento.categoria).distinct().filter(Evento.categoria != None, Evento.categoria != '').all()]
+    return render_template('admin/eventos.html', usuario=user, eventos=eventos, categorias=categorias)
 
 @app.route('/admin/noticias', methods=['GET', 'POST'])
 def admin_noticias():
@@ -436,6 +445,25 @@ def admin_noticias():
 
     noticias = Noticia.query.order_by(Noticia.fechaPub.desc()).all()
     return render_template('admin/noticias.html', usuario=user, noticias=noticias)
+
+@app.route('/admin/eventos/editar/<int:id>', methods=['GET', 'POST'])
+def editar_evento(id):
+    user = get_current_user()
+    if not user or user.rol != 'admin': return redirect(url_for('index'))
+    evento = Evento.query.get_or_404(id)
+    categorias = [r[0] for r in db.session.query(Evento.categoria).distinct().filter(Evento.categoria != None, Evento.categoria != '').all()]
+
+    if request.method == 'POST':
+        evento.titulo = request.form.get('titulo')
+        evento.descripcion = request.form.get('descripcion')
+        evento.lugar = request.form.get('lugar')
+        evento.categoria = request.form.get('categoria')
+        evento.imagenUrl = request.form.get('imagenUrl')
+        db.session.commit()
+        log_auditoria("Editar Evento", "Evento", f"ID: {evento.id}")
+        flash("Evento actualizado")
+        return redirect(url_for('admin_eventos'))
+    return render_template('admin/editar_evento.html', usuario=user, evento=evento, categorias=categorias)
 
 @app.route('/admin/noticia/editar/<int:id>', methods=['GET', 'POST'])
 def editar_noticia(id):
@@ -513,8 +541,29 @@ def admin_mercancia():
                 flash("Estado de Mercancía actualizado")
         return redirect(url_for('admin_mercancia'))
 
-    mercancia = Mercancia.query.all()
-    return render_template('admin/mercancia.html', usuario=user, mercancia=mercancia)
+    mercancia = Mercancia.query.order_by(Mercancia.id.desc()).all()
+    categorias = [r[0] for r in db.session.query(Mercancia.categoria).distinct().filter(Mercancia.categoria != None, Mercancia.categoria != '').all()]
+    return render_template('admin/mercancia.html', usuario=user, mercancia=mercancia, categorias=categorias)
+
+@app.route('/admin/mercancia/editar/<int:id>', methods=['GET', 'POST'])
+def editar_mercancia(id):
+    user = get_current_user()
+    if not user or user.rol != 'admin': return redirect(url_for('index'))
+    mercancia = Mercancia.query.get_or_404(id)
+    categorias = [r[0] for r in db.session.query(Mercancia.categoria).distinct().filter(Mercancia.categoria != None, Mercancia.categoria != '').all()]
+
+    if request.method == 'POST':
+        mercancia.titulo = request.form.get('titulo')
+        mercancia.descripcion = request.form.get('descripcion')
+        mercancia.precio = float(request.form.get('precio'))
+        mercancia.categoria = request.form.get('categoria')
+        mercancia.colores = request.form.get('colores')
+        mercancia.imagenUrl = request.form.get('imagenUrl')
+        db.session.commit()
+        log_auditoria("Editar Mercancia", "Mercancia", f"ID: {mercancia.id}")
+        flash("Mercancía actualizada")
+        return redirect(url_for('admin_mercancia'))
+    return render_template('admin/editar_mercancia.html', usuario=user, mercancia=mercancia, categorias=categorias)
 
 @app.route('/admin/auditoria')
 def admin_auditoria():
