@@ -546,8 +546,8 @@ def admin_dashboard():
         'usuarios': Usuario.query.count(),
         'ventas': sum([p.total for p in Pedido.query.all()]),
         'eventos': Evento.query.count(),
-        'pedidos_pendientes': Pedido.query.filter_by(estado='Pendiente').count(),
-        'solicitudes_vip': SolicitudVip.query.filter_by(estado='Pendiente').count()
+        'pedidos_pendientes': Pedido.query.filter(Pedido.estado.in_(['Pendiente', 'pendiente'])).count(),
+        'solicitudes_vip': SolicitudVip.query.filter(SolicitudVip.estado.in_(['Pendiente', 'pendiente'])).count()
     }
     return render_template('admin/dashboard.html', usuario=user, stats=stats)
 
@@ -587,8 +587,8 @@ def admin_aprobaciones():
                 
         return redirect(url_for('admin_aprobaciones'))
 
-    solicitudes = SolicitudVip.query.filter_by(estado='pendiente').all()
-    pedidos = Pedido.query.filter_by(estado='Pendiente').all()
+    solicitudes = SolicitudVip.query.filter(SolicitudVip.estado.in_(['Pendiente', 'pendiente'])).all()
+    pedidos = Pedido.query.filter(Pedido.estado.in_(['Pendiente', 'pendiente'])).all()
     return render_template('admin/aprobaciones.html', usuario=user, solicitudes=solicitudes, pedidos=pedidos)
 
 @app.route('/admin/eventos', methods=['GET', 'POST'])
