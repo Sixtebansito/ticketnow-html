@@ -619,9 +619,7 @@ def admin_eventos():
                 tb = TipoBoleto(
                     evento_id=e.id,
                     nombre="General",
-                    precio=precio_val,
-                    capacidad=100,
-                    disponibles=100
+                    precio=precio_val
                 )
                 db.session.add(tb)
                 db.session.commit()
