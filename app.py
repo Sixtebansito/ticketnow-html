@@ -20,6 +20,14 @@ def get_current_user():
         return Usuario.query.get(session['userId'])
     return None
 
+@app.route('/initdb-secret')
+def initdb():
+    try:
+        db.create_all()
+        return "Tablas creadas exitosamente."
+    except Exception as e:
+        return f"Error: {str(e)}"
+
 @app.route('/')
 def index():
     user = get_current_user()
