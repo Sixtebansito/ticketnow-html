@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
-from models import db, Usuario, Evento, Noticia, Mercancia, PreguntaFrecuente, CarritoItem, Pedido, PedidoItem, Auditoria, MensajeChat, TipoBoleto, SolicitudVip
+from models import db, Usuario, Evento, Noticia, Mercancia, PreguntaFrecuente, CarritoItem, Pedido, PedidoItem, Auditoria, MensajeChat, TipoBoleto, SolicitudVip, InventarioMercancia
 
 from itsdangerous import URLSafeTimedSerializer
 from email_utils import enviar_correo
