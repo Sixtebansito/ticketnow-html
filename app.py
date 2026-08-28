@@ -984,9 +984,6 @@ def admin_auditoria():
     if not user or user.rol != 'admin': return redirect(url_for('index'))
     logs = Auditoria.query.order_by(Auditoria.fecha.desc()).all()
     return render_template('admin/auditoria.html', usuario=user, logs=logs)
-@app.route('/descargar')
-def descargar():
-    return render_template('descargar.html')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
