@@ -836,6 +836,22 @@ def editar_mercancia(id):
         mercancia.categoria = request.form.get('categoria')
         mercancia.colores = request.form.get('colores')
         mercancia.imagenUrl = request.form.get('imagenUrl')
+        
+        # Actualizar Inventario
+        tallas = request.form.getlist('talla[]')
+        stocks = request.form.getlist('stock[]')
+        
+        InventarioMercancia.query.filter_by(mercancia_id=mercancia.id).delete()
+        
+        for talla, stock in zip(tallas, stocks):
+            if talla.strip() and stock.strip():
+                try:
+                    s_val = int(stock)
+                    inv = InventarioMercancia(mercancia_id=mercancia.id, talla=talla.strip(), stock=s_val)
+                    db.session.add(inv)
+                except ValueError:
+                    pass
+                    
         db.session.commit()
         log_auditoria("Editar Mercancia", "Mercancia", f"ID: {mercancia.id}")
         flash("Mercancía actualizada")

@@ -67,6 +67,38 @@
                     </div>
                 </div>
 
+                <!-- Gestión de Inventario -->
+                <div class="mt-8 border-t border-gray-200 dark:border-white/10 pt-6">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Gestión de Inventario (Tallas y Stock)</h3>
+                    
+                    <div id="inventory-container" class="space-y-3">
+                        {% for inv in mercancia.inventario %}
+                        <div class="flex items-center gap-4 inventory-row">
+                            <div class="flex-1">
+                                <label class="block text-xs font-medium text-gray-500 mb-1">Talla</label>
+                                <input type="text" name="talla[]" value="{{ inv.talla }}" required class="w-full px-3 py-2 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:outline-none">
+                            </div>
+                            <div class="flex-1">
+                                <label class="block text-xs font-medium text-gray-500 mb-1">Stock</label>
+                                <input type="number" min="0" name="stock[]" value="{{ inv.stock }}" required class="w-full px-3 py-2 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:outline-none">
+                            </div>
+                            <button type="button" class="mt-5 text-red-500 hover:text-red-700 remove-row" title="Eliminar talla">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mt-4 flex gap-3">
+                        <button type="button" id="add-size-btn" class="px-4 py-2 text-sm font-bold text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:hover:bg-purple-900/40">
+                            + Añadir Talla
+                        </button>
+                        <button type="button" id="add-ropa-btn" class="px-4 py-2 text-sm font-bold text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40" {% if 'ropa' not in (mercancia.categoria|lower) %}style="display:none;"{% endif %}>
+                            + Generar S, M, L, XL
+                        </button>
+                    </div>
+                </div>
+
                 <div class="pt-4">
                     <button type="submit" class="w-full px-6 py-3 font-bold text-white transition bg-purple-600 rounded-xl hover:bg-purple-700">Guardar Cambios</button>
                 </div>
@@ -75,4 +107,61 @@
     </div>
 </main>
 {% include 'admin/cloudinary_script.html' %}
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('inventory-container');
+    const addSizeBtn = document.getElementById('add-size-btn');
+    const addRopaBtn = document.getElementById('add-ropa-btn');
+    const categoriaInput = document.querySelector('input[name="categoria"]');
+
+    function createRow(talla = '', stock = 0) {
+        const div = document.createElement('div');
+        div.className = 'flex items-center gap-4 inventory-row';
+        div.innerHTML = `
+            <div class="flex-1">
+                <label class="block text-xs font-medium text-gray-500 mb-1">Talla</label>
+                <input type="text" name="talla[]" value="${talla}" required class="w-full px-3 py-2 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:outline-none">
+            </div>
+            <div class="flex-1">
+                <label class="block text-xs font-medium text-gray-500 mb-1">Stock</label>
+                <input type="number" min="0" name="stock[]" value="${stock}" required class="w-full px-3 py-2 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg dark:bg-[#1a1a24] dark:border-white/10 dark:text-white focus:outline-none">
+            </div>
+            <button type="button" class="mt-5 text-red-500 hover:text-red-700 remove-row" title="Eliminar talla">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </button>
+        `;
+        div.querySelector('.remove-row').addEventListener('click', () => {
+            div.remove();
+        });
+        return div;
+    }
+
+    // Attach remove event to existing rows
+    document.querySelectorAll('.remove-row').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.currentTarget.closest('.inventory-row').remove();
+        });
+    });
+
+    addSizeBtn.addEventListener('click', () => {
+        container.appendChild(createRow());
+    });
+
+    addRopaBtn.addEventListener('click', () => {
+        ['S', 'M', 'L', 'XL'].forEach(t => {
+            container.appendChild(createRow(t, 0));
+        });
+    });
+
+    categoriaInput.addEventListener('input', (e) => {
+        if (e.target.value.toLowerCase().includes('ropa')) {
+            addRopaBtn.style.display = 'block';
+        } else {
+            addRopaBtn.style.display = 'none';
+        }
+    });
+});
+</script>
+
 {% endblock %}
