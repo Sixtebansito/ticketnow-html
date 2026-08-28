@@ -241,6 +241,27 @@ def setup_db():
         db.session.rollback()
         return f"Error actualizando la base de datos: {str(e)}"
 
+@app.route('/debug-db')
+def debug_db():
+    try:
+        from sqlalchemy import text
+        db_url = os.environ.get('DATABASE_URL', 'NOT SET (usando local_db.sqlite)')
+        
+        # Test connection
+        res = db.session.execute(text("SELECT 1")).scalar()
+        
+        # Test Evento schema
+        try:
+            ev_count = Evento.query.count()
+            ev_status = f"Evento count: {ev_count}"
+        except Exception as e:
+            ev_status = f"Evento query failed: {str(e)}"
+            
+        return f"DB URL: {db_url[:15]}... | Connection: OK ({res}) | {ev_status}"
+    except Exception as e:
+        import traceback
+        return f"DB Connection ERROR: {str(e)} <br><pre>{traceback.format_exc()}</pre>"
+
 @app.route('/precios-vip')
 def precios_vip():
     user = get_current_user()
