@@ -93,7 +93,7 @@
                         <button type="button" id="add-size-btn" class="px-4 py-2 text-sm font-bold text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:hover:bg-purple-900/40">
                             + Añadir Talla
                         </button>
-                        <button type="button" id="add-ropa-btn" class="px-4 py-2 text-sm font-bold text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40" {% if 'ropa' not in (mercancia.categoria|lower) %}style="display:none;"{% endif %}>
+                        <button type="button" id="add-ropa-btn" class="px-4 py-2 text-sm font-bold text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40" {% if 'ropa' not in ((mercancia.categoria or '')|lower) %}style="display:none;"{% endif %}>
                             + Generar S, M, L, XL
                         </button>
                     </div>
