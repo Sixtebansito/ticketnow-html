@@ -578,6 +578,22 @@ def admin_faqs():
     faqs = PreguntaFrecuente.query.all()
     return render_template('admin/faqs.html', usuario=user, faqs=faqs)
 
+@app.route('/admin/faqs/edit/<int:faq_id>', methods=['GET', 'POST'])
+def admin_editar_faq(faq_id):
+    user = get_current_user()
+    if not user or user.rol != 'admin': return redirect(url_for('index'))
+    
+    f = PreguntaFrecuente.query.get_or_404(faq_id)
+    if request.method == 'POST':
+        f.pregunta = request.form.get('pregunta')
+        f.respuesta = request.form.get('respuesta')
+        db.session.commit()
+        log_auditoria("Editar FAQ", "PreguntaFrecuente", f"ID: {f.id}")
+        flash("FAQ actualizada exitosamente")
+        return redirect(url_for('admin_faqs'))
+        
+    return render_template('admin/editar_faq.html', usuario=user, faq=f)
+
 @app.route('/admin/mercancia', methods=['GET', 'POST'])
 def admin_mercancia():
     user = get_current_user()
