@@ -74,9 +74,12 @@
                                 Ver Detalles
                             </a>
                             
-                            <a href="{{ url_for('detalle_evento', id=ev.id) }}" class="w-1/2 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-purple-600/40 flex items-center justify-center">
+                            <button type="button" class="btn-abrir-modal w-1/2 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-purple-600/40 flex items-center justify-center"
+                                data-id="{{ ev.id }}"
+                                data-nombre="{{ ev.tit }}"
+                                data-boletos="{{ ev.boletos_json|forceescape }}">
                                 Comprar
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -84,7 +87,29 @@
         </div>
         {% endfor %}
     </div>
+    </div>
 </main>
+
+<!-- Modal Comprar -->
+<div id="modal-comprar" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4 opacity-0 transition-opacity duration-300">
+    <div class="bg-white dark:bg-[#1a1a24] p-6 md:p-8 rounded-3xl w-full max-w-md shadow-2xl relative transform scale-95 transition-transform duration-300">
+        <button id="btn-cerrar-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 rounded-full p-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <h3 class="text-2xl font-bold mb-2 text-gray-900 dark:text-white line-clamp-2" id="modal-titulo">Comprar Boletos</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Selecciona el tipo de entrada que deseas adquirir.</p>
+        
+        <div class="space-y-3 mb-6 max-h-60 overflow-y-auto pr-2" id="modal-boletos">
+            <!-- Injected dynamically -->
+        </div>
+        
+        <button id="btn-agregar-carrito" class="w-full py-4 text-lg font-bold text-white transition-all bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 rounded-xl shadow-lg hover:shadow-purple-600/50 hover:-translate-y-1 relative overflow-hidden flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span id="btn-agregar-texto">Agregar al Carrito</span>
+        </button>
+    </div>
+</div>
+
 
 <script>
     const setupBuscadores = () => {
@@ -152,73 +177,9 @@
         });
     };
 
-    const initBotonesEventoYProducto = () => {
-        const botones = document.querySelectorAll('.btn-comprar-evento');
-        botones.forEach(boton => {
-            const newBtn = boton.cloneNode(true);
-            boton.parentNode.replaceChild(newBtn, boton);
-            
-            newBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                let btn = e.target.closest('button');
-                
-                const id = btn.getAttribute('data-id');
-                const title = btn.getAttribute('data-title');
-                const priceStr = btn.getAttribute('data-price');
-                const category = btn.getAttribute('data-category');
-                const price = parseFloat(priceStr || '0');
-
-                const textoOriginal = btn.textContent;
-                btn.textContent = 'Añadiendo...';
-                btn.classList.add('opacity-75', 'cursor-wait');
-                btn.disabled = true;
-                
-                setTimeout(() => {
-                    btn.textContent = '¡Añadido! ✅';
-                    btn.classList.replace('bg-purple-600', 'bg-green-500');
-                    btn.classList.replace('hover:bg-purple-500', 'hover:bg-green-400');
-                    
-                    setTimeout(() => {
-                        btn.textContent = textoOriginal;
-                        btn.classList.replace('bg-green-500', 'bg-purple-600');
-                        btn.classList.replace('hover:bg-green-400', 'hover:bg-purple-500');
-                        btn.classList.remove('opacity-75', 'cursor-wait');
-                        btn.disabled = false;
-                    }, 2000);
-                }, 600);
-                
-                const item = {
-                    id: id,
-                    title: title,
-                    price: price,
-                    category: category,
-                    type: 'evento',
-                    quantity: 1
-                };
-
-                let cart = JSON.parse(localStorage.getItem('ticketnow_cart') || '[]');
-                const existingIndex = cart.findIndex(i => i.id === item.id);
-                if (existingIndex > -1) cart[existingIndex].quantity += 1;
-                else cart.push(item);
-                localStorage.setItem('ticketnow_cart', JSON.stringify(cart));
-
-                const rect = btn.getBoundingClientRect();
-                const event = new CustomEvent('itemAddedToCart', {
-                    detail: {
-                        startX: rect.left + rect.width / 2,
-                        startY: rect.top + rect.height / 2,
-                        title: title,
-                        bgClass: 'from-purple-600 to-indigo-600'
-                    }
-                });
-                document.dispatchEvent(event);
-            });
-        });
-    };
-
     document.addEventListener('DOMContentLoaded', () => {
         setupBuscadores();
-        initBotonesEventoYProducto();
+        setupModalComprar();
     });
 </script>
 {% endblock %}

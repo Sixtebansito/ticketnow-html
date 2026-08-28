@@ -277,13 +277,16 @@ def eventos():
         {"bg": "from-blue-800 to-blue-400", "txt": "text-blue-600 dark:text-blue-400", "tag": "bg-blue-100 dark:bg-blue-600/20"},
         {"bg": "from-orange-800 to-orange-400", "txt": "text-orange-700 dark:text-orange-400", "tag": "bg-orange-100 dark:bg-orange-500/20"}
     ]
+    import json
     for i, e in enumerate(eventos_db):
         c = colores[i % len(colores)]
+        boletos_json = json.dumps([{'id': b.id, 'nombre': b.nombre, 'precio': float(b.precio)} for b in e.tipos_boletos if b.activo])
         eventos.append({
             'id': e.id,
             'cat': e.categoria or 'Evento',
             'tit': e.titulo,
             'precio': f'${e.precio_desde:.2f}',
+            'boletos_json': boletos_json,
             'bg': c['bg'],
             'txt': c['txt'],
             'tag': c['tag'],
