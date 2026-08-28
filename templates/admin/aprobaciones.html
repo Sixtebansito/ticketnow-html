@@ -105,7 +105,7 @@
                                         <span class="truncate pr-4">
                                             {{ item.cantidad }}x 
                                             {% if item.eventoId %}
-                                                Evento: {{ item.evento.titulo }} ({{ item.tipo_boleto.nombre }})
+                                                Evento: {{ item.evento.titulo }} {% if item.tipo_boleto %}({{ item.tipo_boleto.nombre }}){% endif %}
                                             {% elif item.mercanciaId %}
                                                 Mercancía: {{ item.mercancia.titulo }} (Talla: {{ item.talla }})
                                             {% else %}
