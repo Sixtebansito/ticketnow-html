@@ -85,12 +85,12 @@ def auth():
                 # Send email
                 from email_utils import enviar_correo
                 from datetime import datetime
-                mensaje = f\"\"\"
+                mensaje = f"""
                 <h2>Hola {usuario.nombre},</h2>
                 <p>Se ha detectado un nuevo inicio de sesión en tu cuenta de TicketNow.</p>
                 <p>Fecha y Hora: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
                 <p>Si no fuiste tú, te recomendamos cambiar tu contraseña inmediatamente.</p>
-                \"\"\"
+                """
                 enviar_correo(usuario.email, "Nuevo inicio de sesión - TicketNow", mensaje)
 
                 return redirect(url_for('perfil'))
@@ -381,7 +381,7 @@ def carrito():
                     for item in cart:
                         detalles_html += f"<li>{item.get('quantity', 1)}x {item.get('name', 'Item')} - ${item.get('price', 0)}</li>"
                     
-                    mensaje = f\"\"\"
+                    mensaje = f"""
                     <h2>¡Gracias por tu compra, {user.nombre}!</h2>
                     <p>Tu pedido <strong>#ORD-{nuevo_pedido.id}</strong> ha sido confirmado.</p>
                     <p><strong>Fecha:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
@@ -393,7 +393,7 @@ def carrito():
                     <p><strong>Total pagado:</strong> ${"%.2f" % total}</p>
                     <br>
                     <p>Puedes ver el detalle completo en tu <a href="https://ticketnow-html.vercel.app/pedido/{nuevo_pedido.id}">perfil de TicketNow</a>.</p>
-                    \"\"\"
+                    """
                     enviar_correo(user.email, f"Confirmación de Pedido #ORD-{nuevo_pedido.id}", mensaje)
 
 
