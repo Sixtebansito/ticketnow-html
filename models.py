@@ -169,3 +169,10 @@ class Auditoria(db.Model):
     fecha = db.Column(db.DateTime, default=datetime.utcnow)
     usuarioId = db.Column(db.Integer, db.ForeignKey('Usuario.id'), nullable=False)
     usuario = db.relationship('Usuario', backref='auditorias', lazy=True)
+
+
+class Configuracion(db.Model):
+    __tablename__ = 'Configuracion'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    clave = db.Column(db.String(100), unique=True, nullable=False)
+    valor = db.Column(db.String(500), nullable=True)

@@ -2,8 +2,10 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from models import db, Usuario, Evento, Noticia, Mercancia, PreguntaFrecuente, CarritoItem, Pedido, PedidoItem, Auditoria, MensajeChat, TipoBoleto, SolicitudVip, InventarioMercancia, Configuracion
 
+from models import db, Usuario, Evento, Noticia, Mercancia, PreguntaFrecuente, CarritoItem, Pedido, PedidoItem, Auditoria, MensajeChat, TipoBoleto, SolicitudVip, InventarioMercancia, Configuracion
+
+from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import URLSafeTimedSerializer
-from email_utils import enviar_correo
 
 app = Flask(__name__)
 app.secret_key = 'ticketnow_secret_key_flask'
@@ -149,21 +151,33 @@ def auth():
         if action == 'login':
             username = request.form.get('username')
             usuario = Usuario.query.filter_by(username=username).first()
-            if usuario and usuario.password == password:
-                session['userId'] = usuario.id
-                
-                # Send email
-                from email_utils import enviar_correo
-                from datetime import datetime
-                mensaje = f"""
-                <h2>Hola {usuario.nombre},</h2>
-                <p>Se ha detectado un nuevo inicio de sesión en tu cuenta de TicketNow.</p>
-                <p>Fecha y Hora: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
-                <p>Si no fuiste tú, te recomendamos cambiar tu contraseña inmediatamente.</p>
-                """
-                enviar_correo(usuario.email, "Nuevo inicio de sesión - TicketNow", mensaje)
+            if usuario:
+                valid = False
+                if usuario.password and usuario.password.startswith('scrypt:'):
+                    valid = check_password_hash(usuario.password, password)
+                else:
+                    valid = (usuario.password == password)
+                    if valid:
+                        usuario.password = generate_password_hash(password)
+                        db.session.commit()
 
-                return redirect(url_for('perfil'))
+                if valid:
+                    session['userId'] = usuario.id
+                    
+                    # Send email
+                    from email_utils import enviar_correo
+                    from datetime import datetime
+                    mensaje = f"""
+                    <h2>Hola {usuario.nombre},</h2>
+                    <p>Se ha detectado un nuevo inicio de sesión en tu cuenta de TicketNow.</p>
+                    <p>Fecha y Hora: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+                    <p>Si no fuiste tú, te recomendamos cambiar tu contraseña inmediatamente.</p>
+                    """
+                    enviar_correo(usuario.email, "Nuevo inicio de sesión - TicketNow", mensaje)
+
+                    return redirect(url_for('perfil'))
+                else:
+                    error = "Credenciales incorrectas"
             else:
                 error = "Credenciales incorrectas"
                 
@@ -182,7 +196,7 @@ def auth():
                     nombre=nombre,
                     username=username,
                     email=email,
-                    password=password,
+                    password=generate_password_hash(password),
                     rol="admin" if is_admin else "cliente",
                     esVip=is_admin
                 )
@@ -242,7 +256,7 @@ def reset_password(token):
         password = request.form.get('password')
         user = Usuario.query.filter_by(email=email).first()
         if user:
-            user.password = password
+            user.password = generate_password_hash(password)
             db.session.commit()
             flash('Tu contraseña ha sido actualizada correctamente. Ya puedes iniciar sesión.', 'success')
             return redirect(url_for('auth'))
@@ -604,13 +618,19 @@ def perfil_info():
     if request.method == 'POST':
         password_actual = request.form.get('password_actual')
         nueva_password = request.form.get('nueva_password')
-        
-        if user.password == password_actual:
-            user.password = nueva_password
-            db.session.commit()
-            flash('Tu contraseña ha sido actualizada correctamente.', 'success')
-        else:
-            flash('La contraseña actual es incorrecta.', 'error')
+        if password_actual and nueva_password:
+            valid_actual = False
+            if user.password and user.password.startswith('scrypt:'):
+                valid_actual = check_password_hash(user.password, password_actual)
+            else:
+                valid_actual = (user.password == password_actual)
+                
+            if valid_actual:
+                user.password = generate_password_hash(nueva_password)
+                db.session.commit()
+                flash("Contraseña actualizada exitosamente.", "success")
+            else:
+                flash("La contraseña actual es incorrecta.", "error")
             
         return redirect(url_for('perfil_info'))
         
