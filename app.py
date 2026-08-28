@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
-from models import db, Usuario, Evento, Noticia, Mercancia, PreguntaFrecuente, CarritoItem, Pedido, PedidoItem, Auditoria, MensajeChat, TipoBoleto, SolicitudVip, InventarioMercancia
+from models import db, Usuario, Evento, Noticia, Mercancia, PreguntaFrecuente, CarritoItem, Pedido, PedidoItem, Auditoria, MensajeChat, TipoBoleto, SolicitudVip, InventarioMercancia, Configuracion
 
 from itsdangerous import URLSafeTimedSerializer
 from email_utils import enviar_correo
@@ -31,9 +31,68 @@ def initdb():
     except Exception as e:
         return f"Error: {str(e)}"
 
+@app.route('/seed-more-secret')
+def seed_more():
+    try:
+        from datetime import datetime, timedelta
+        
+        # 5 Eventos
+        e1 = Evento(titulo='Festival de Música Urbana', descripcion='El mayor festival de reggaeton y trap.', fecha=datetime.utcnow() + timedelta(days=20), lugar='Arena Coliseo', imagenUrl='https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800')
+        e2 = Evento(titulo='Concierto Sinfónico Rock', descripcion='Clásicos del rock interpretados por la orquesta sinfónica.', fecha=datetime.utcnow() + timedelta(days=45), lugar='Teatro Nacional', imagenUrl='https://images.unsplash.com/photo-1549834125-82d3c48159a3?w=800')
+        e3 = Evento(titulo='Torneo E-Sports Final', descripcion='La gran final de League of Legends.', fecha=datetime.utcnow() + timedelta(days=12), lugar='Centro de Convenciones', imagenUrl='https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800')
+        e4 = Evento(titulo='Stand Up Comedy Night', descripcion='Noche de risas con los mejores comediantes del país.', fecha=datetime.utcnow() + timedelta(days=5), lugar='Bar Comedy Club', imagenUrl='https://images.unsplash.com/photo-1585699324551-f6c309eedeca?w=800')
+        e5 = Evento(titulo='Exhibición de Arte Moderno', descripcion='Galería con artistas emergentes de Latinoamérica.', fecha=datetime.utcnow() + timedelta(days=60), lugar='Museo de Arte Contemporáneo', imagenUrl='https://images.unsplash.com/photo-1536924940846-227afb31e2a5?w=800')
+        db.session.add_all([e1, e2, e3, e4, e5])
+        db.session.flush()
+
+        t1 = TipoBoleto(evento_id=e1.id, nombre='General', precio=30.0)
+        t2 = TipoBoleto(evento_id=e1.id, nombre='VIP', precio=75.0)
+        t3 = TipoBoleto(evento_id=e2.id, nombre='Platea', precio=40.0)
+        t4 = TipoBoleto(evento_id=e3.id, nombre='General', precio=15.0)
+        t5 = TipoBoleto(evento_id=e4.id, nombre='Mesa', precio=20.0)
+        t6 = TipoBoleto(evento_id=e5.id, nombre='Pase Libre', precio=10.0)
+        db.session.add_all([t1, t2, t3, t4, t5, t6])
+
+        # 5 Mercancías
+        m1 = Mercancia(titulo='Camiseta Oficial Real Madrid', descripcion='Camiseta temporada 2025.', precio=85.0, categoria='Ropa', imagenUrl='https://images.unsplash.com/photo-1583316174775-bd6dc0e9f298?w=800')
+        m2 = Mercancia(titulo='Camiseta FC Barcelona', descripcion='Camiseta oficial visitante.', precio=80.0, categoria='Ropa', imagenUrl='https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800')
+        m3 = Mercancia(titulo='Póster Concierto Coldplay', descripcion='Póster gigante autografiado.', precio=25.0, categoria='Accesorios', imagenUrl='https://images.unsplash.com/photo-1584680239088-728b7e283204?w=800')
+        m4 = Mercancia(titulo='Póster El Fantasma de la Ópera', descripcion='Edición de colección.', precio=20.0, categoria='Accesorios', imagenUrl='https://images.unsplash.com/photo-1580136607993-df77229e6125?w=800')
+        m5 = Mercancia(titulo='Camiseta Evento E-Sports', descripcion='Talla M edición especial.', precio=30.0, categoria='Ropa', imagenUrl='https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800')
+        db.session.add_all([m1, m2, m3, m4, m5])
+        db.session.flush()
+
+        inv1 = InventarioMercancia(mercancia_id=m1.id, talla='L', stock=50)
+        inv2 = InventarioMercancia(mercancia_id=m2.id, talla='M', stock=30)
+        inv3 = InventarioMercancia(mercancia_id=m3.id, talla='Única', stock=100)
+        inv4 = InventarioMercancia(mercancia_id=m4.id, talla='Única', stock=150)
+        inv5 = InventarioMercancia(mercancia_id=m5.id, talla='S', stock=20)
+        db.session.add_all([inv1, inv2, inv3, inv4, inv5])
+
+        # 2 FAQ
+        f1 = PreguntaFrecuente(pregunta='¿Cómo descargo mis boletos electrónicos?', respuesta='Puedes descargar tus boletos desde la sección "Mis Pedidos" en tu Dashboard.')
+        f2 = PreguntaFrecuente(pregunta='¿Qué hago si mi pago es rechazado?', respuesta='Intenta con otra tarjeta de crédito o contacta a soporte mediante nuestro chat.')
+        db.session.add_all([f1, f2])
+
+        # 2 Noticias
+        n1 = Noticia(titulo='Nuevos conciertos anunciados para 2026', contenido='Prepárate para la mayor gira de artistas internacionales en el país.', imagenUrl='https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800')
+        n2 = Noticia(titulo='Descuentos VIP en Tienda', contenido='Los clientes VIP ahora cuentan con un 20% de descuento en mercadería.', imagenUrl='https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800')
+        db.session.add_all([n1, n2])
+
+        db.session.commit()
+        return "Nuevos registros creados exitosamente."
+    except Exception as e:
+        db.session.rollback()
+        return f"Error: {str(e)}"
+
 @app.route('/')
 def index():
     user = get_current_user()
+    
+    # Obtener configuración del GIF
+    conf_gif = Configuracion.query.filter_by(clave='landing_gif').first()
+    landing_gif = conf_gif.valor if conf_gif and conf_gif.valor else 'https://www.image2url.com/r2/default/gifs/1787878685830-94dc7db9-4f10-4216-87d5-c1a594f53291.gif'
+    
     eventos_db = Evento.query.filter_by(activo=True).order_by(Evento.fecha.asc()).limit(3).all()
     eventos = [{
         'id': e.id,
@@ -74,7 +133,7 @@ def index():
             { 'cat': "Coleccionables", 'tit': "Termo de Acero - Quito en Vivo", 'precio': "$22.00", 'desc': "Termo oficial de doble capa térmica de 500ml.", 'tallas': [], 'col': ["#7c3aed"] }
         ]
 
-    return render_template('index.html', usuario=user, eventos=eventos, noticias=noticias, mercancia=mercancia)
+    return render_template('index.html', usuario=user, eventos=eventos, noticias=noticias, mercancia=mercancia, landing_gif=landing_gif)
 
 @app.route('/auth', methods=['GET', 'POST'])
 def auth():
@@ -465,6 +524,31 @@ def carrito():
                 error = "Hubo un error al procesar tu pago."
 
     return render_template('carrito.html', usuario=user, success=success, error=error)
+
+@app.route('/admin/configuracion', methods=['GET', 'POST'])
+def admin_configuracion():
+    user = get_current_user()
+    if not user or user.rol != 'admin':
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        landing_gif = request.form.get('landing_gif')
+        if landing_gif:
+            conf = Configuracion.query.filter_by(clave='landing_gif').first()
+            if not conf:
+                conf = Configuracion(clave='landing_gif', valor=landing_gif)
+                db.session.add(conf)
+            else:
+                conf.valor = landing_gif
+            db.session.commit()
+            log_auditoria("Actualizar Configuracion", "Configuracion", "Landing GIF actualizado")
+            flash("Configuración actualizada", "success")
+        return redirect(url_for('admin_configuracion'))
+        
+    conf = Configuracion.query.filter_by(clave='landing_gif').first()
+    current_gif = conf.valor if conf else ''
+    
+    return render_template('admin/configuracion.html', usuario=user, current_gif=current_gif)
 
 @app.route('/ticketapp')
 def ticketapp():
