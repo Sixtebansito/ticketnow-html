@@ -2,10 +2,9 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from models import db, Usuario, Evento, Noticia, Mercancia, PreguntaFrecuente, CarritoItem, Pedido, PedidoItem, Auditoria, MensajeChat, TipoBoleto, SolicitudVip, InventarioMercancia, Configuracion
 
-from models import db, Usuario, Evento, Noticia, Mercancia, PreguntaFrecuente, CarritoItem, Pedido, PedidoItem, Auditoria, MensajeChat, TipoBoleto, SolicitudVip, InventarioMercancia, Configuracion
-
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import URLSafeTimedSerializer
+from email_utils import enviar_correo
 
 app = Flask(__name__)
 app.secret_key = 'ticketnow_secret_key_flask'
