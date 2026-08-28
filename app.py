@@ -337,16 +337,16 @@ def carrito():
 @app.route('/ticketapp')
 def ticketapp():
     user = get_current_user()
-    is_vip = False
-    if user:
-        user_db = Usuario.query.get(user.id)
-        if user_db and user_db.esVip:
-            is_vip = True
     if not user:
         return redirect(url_for('auth'))
     
+    user_db = Usuario.query.get(user.id)
+    if not user_db or not user_db.esVip:
+        flash('Necesitas ser Miembro VIP para acceder al dashboard de TicketApp.', 'warning')
+        return redirect(url_for('precios_vip'))
+    
     mensajes = MensajeChat.query.order_by(MensajeChat.fecha.asc()).limit(50).all()
-    return render_template('ticketapp.html', usuario=user, mensajes=mensajes, isVip=is_vip)
+    return render_template('ticketapp.html', usuario=user, mensajes=mensajes, isVip=True)
 
 @app.route('/api/chat', methods=['GET', 'POST'])
 def api_chat():
