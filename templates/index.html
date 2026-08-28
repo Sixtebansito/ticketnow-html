@@ -447,9 +447,15 @@
                     </li>
                 </ul>
                 
-                <a href="/precios-vip" class="relative z-20 inline-block px-8 py-3 font-bold text-center text-white transition bg-purple-600 rounded-full shadow-lg dark:bg-yellow-400 hover:bg-purple-700 dark:hover:bg-yellow-300 dark:text-black">
-                    Adquirir membresía
-                </a>
+                {% if usuario and usuario.esVip %}
+                    <a href="/ticketapp" class="relative z-20 inline-block px-8 py-3 font-bold text-center text-white transition bg-purple-600 rounded-full shadow-lg dark:bg-yellow-400 hover:bg-purple-700 dark:hover:bg-yellow-300 dark:text-black">
+                        Ir al Dashboard VIP
+                    </a>
+                {% else %}
+                    <a href="/precios-vip" class="relative z-20 inline-block px-8 py-3 font-bold text-center text-white transition bg-purple-600 rounded-full shadow-lg dark:bg-yellow-400 hover:bg-purple-700 dark:hover:bg-yellow-300 dark:text-black">
+                        Adquirir membresía
+                    </a>
+                {% endif %}
             </div>
 
             <div class="relative z-10 w-full max-w-sm">

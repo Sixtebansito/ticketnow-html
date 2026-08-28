@@ -9,7 +9,11 @@
             <a href="/eventos" class="hover:text-purple-600 dark:hover:text-white transition">Eventos</a>
             <a href="/tienda" class="hover:text-purple-600 dark:hover:text-white transition">Tienda</a>
             <a href="/noticias" class="hover:text-purple-600 dark:hover:text-white transition">Noticias</a>
-            <a href="/precios-vip" class="text-purple-600 dark:text-purple-400 font-bold">Planes VIP</a>
+            {% if usuario and usuario.esVip %}
+                <a href="/ticketapp" class="text-purple-600 dark:text-purple-400 font-bold">TicketApp VIP</a>
+            {% else %}
+                <a href="/precios-vip" class="text-purple-600 dark:text-purple-400 font-bold">Planes VIP</a>
+            {% endif %}
             <a href="/ayuda" class="hover:text-purple-600 dark:hover:text-white transition">Ayuda</a>
         </nav>
         
@@ -42,7 +46,11 @@
         <a href="/eventos" class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors py-2">Eventos</a>
         <a href="/tienda" class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors py-2">Tienda</a>
         <a href="/noticias" class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors py-2">Noticias</a>
-        <a href="/precios-vip" class="text-purple-600 dark:text-purple-400 py-2 w-full text-center">Planes VIP</a>
+        {% if usuario and usuario.esVip %}
+            <a href="/ticketapp" class="text-purple-600 dark:text-purple-400 py-2 w-full text-center">TicketApp VIP</a>
+        {% else %}
+            <a href="/precios-vip" class="text-purple-600 dark:text-purple-400 py-2 w-full text-center">Planes VIP</a>
+        {% endif %}
         <a href="/ayuda" class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors py-2">Ayuda</a>
         
         <div class="w-full max-w-xs mt-4 mb-20 space-y-4">

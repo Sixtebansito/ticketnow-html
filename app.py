@@ -265,7 +265,28 @@ def debug_db():
 @app.route('/precios-vip')
 def precios_vip():
     user = get_current_user()
+    if user and user.esVip:
+        return redirect(url_for('ticketapp'))
     return render_template('precios_vip.html', usuario=user)
+
+@app.route('/solicitar-vip', methods=['POST'])
+def solicitar_vip():
+    user = get_current_user()
+    if not user:
+        flash("Debes iniciar sesión para solicitar ser VIP.", "error")
+        return redirect(url_for('auth'))
+    
+    # Check if a pending or approved request already exists
+    existing = SolicitudVip.query.filter_by(usuarioId=user.id).order_by(SolicitudVip.fecha.desc()).first()
+    if existing and existing.estado in ['Pendiente', 'Aprobado', 'aprobada', 'pendiente']:
+        flash("Ya tienes una solicitud VIP en proceso o aprobada.", "warning")
+        return redirect(url_for('perfil'))
+        
+    nueva_solicitud = SolicitudVip(usuarioId=user.id, estado='pendiente')
+    db.session.add(nueva_solicitud)
+    db.session.commit()
+    flash("Tu solicitud VIP ha sido enviada con éxito.", "success")
+    return redirect(url_for('perfil'))
 
 @app.route('/ayuda')
 def ayuda():
@@ -426,10 +447,22 @@ def admin_aprobaciones():
                     flash('Solicitud VIP rechazada.', 'success')
                 db.session.commit()
                 
+        elif req_type == 'pedido' and solicitud_id:
+            pedido = Pedido.query.get(solicitud_id)
+            if pedido:
+                if action == 'aprobar':
+                    pedido.estado = 'Aprobado'
+                    flash('Pedido aprobado correctamente.', 'success')
+                elif action == 'rechazar':
+                    pedido.estado = 'Rechazado'
+                    flash('Pedido rechazado.', 'success')
+                db.session.commit()
+                
         return redirect(url_for('admin_aprobaciones'))
 
     solicitudes = SolicitudVip.query.filter_by(estado='pendiente').all()
-    return render_template('admin/aprobaciones.html', usuario=user, solicitudes=solicitudes)
+    pedidos = Pedido.query.filter_by(estado='Pendiente').all()
+    return render_template('admin/aprobaciones.html', usuario=user, solicitudes=solicitudes, pedidos=pedidos)
 
 @app.route('/admin/eventos', methods=['GET', 'POST'])
 def admin_eventos():
@@ -482,6 +515,34 @@ def admin_eventos():
     eventos = Evento.query.order_by(Evento.fecha.desc()).all()
     categorias = [r[0] for r in db.session.query(Evento.categoria).distinct().filter(Evento.categoria != None, Evento.categoria != '').all()]
     return render_template('admin/eventos.html', usuario=user, eventos=eventos, categorias=categorias)
+
+@app.route('/admin/eventos/edit/<int:id>', methods=['GET', 'POST'])
+def admin_editar_evento(id):
+    user = get_current_user()
+    if not user or user.rol != 'admin': return redirect(url_for('index'))
+    
+    e = Evento.query.get_or_404(id)
+    if request.method == 'POST':
+        import datetime
+        try:
+            e.titulo = request.form.get('titulo')
+            e.descripcion = request.form.get('descripcion')
+            e.lugar = request.form.get('lugar')
+            e.categoria = request.form.get('categoria')
+            e.imagenUrl = request.form.get('imagenUrl')
+            
+            fecha_str = request.form.get('fecha')
+            if fecha_str:
+                e.fecha = datetime.datetime.strptime(fecha_str, '%Y-%m-%dT%H:%M')
+                
+            db.session.commit()
+            log_auditoria("Editar Evento", "Evento", f"ID: {e.id}")
+            flash("Evento actualizado exitosamente")
+            return redirect(url_for('admin_eventos'))
+        except Exception as ex:
+            flash(f"Error al editar evento: {str(ex)}")
+            
+    return render_template('admin/editar_evento.html', usuario=user, evento=e)
 
 @app.route('/admin/noticias', methods=['GET', 'POST'])
 def admin_noticias():
