@@ -91,7 +91,7 @@
                                 <td class="px-6 py-4">{{ pedido.fecha.strftime('%Y-%m-%d') }}</td>
                                 <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">#ORD-{{ pedido.id }}</td>
                                 <td class="px-6 py-4">${{ "%.2f"|format(pedido.total) }}</td>
-                                <td class="px-6 py-4"><a href="#" class="text-purple-600 dark:text-purple-400 hover:underline">Ver Detalle</a></td>
+                                <td class="px-6 py-4"><a href="{{ url_for('detalle_pedido', id=pedido.id) }}" class="text-purple-600 dark:text-purple-400 hover:underline">Ver Detalle</a></td>
                             </tr>
                             {% else %}
                                 <tr><td colspan="4" class="px-6 py-4 text-center">No hay compras registradas.</td></tr>

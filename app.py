@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
-from models import db, Usuario, Evento, Noticia, Mercancia, PreguntaFrecuente, CarritoItem, Pedido, PedidoItem, Auditoria, MensajeChat, TipoBoleto
+from models import db, Usuario, Evento, Noticia, Mercancia, PreguntaFrecuente, CarritoItem, Pedido, PedidoItem, Auditoria, MensajeChat, TipoBoleto, SolicitudVip
 
 app = Flask(__name__)
 app.secret_key = 'ticketnow_secret_key_flask'
@@ -81,6 +81,18 @@ def auth():
             usuario = Usuario.query.filter_by(username=username).first()
             if usuario and usuario.password == password:
                 session['userId'] = usuario.id
+                
+                # Send email
+                from email_utils import enviar_correo
+                from datetime import datetime
+                mensaje = f\"\"\"
+                <h2>Hola {usuario.nombre},</h2>
+                <p>Se ha detectado un nuevo inicio de sesión en tu cuenta de TicketNow.</p>
+                <p>Fecha y Hora: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+                <p>Si no fuiste tú, te recomendamos cambiar tu contraseña inmediatamente.</p>
+                \"\"\"
+                enviar_correo(usuario.email, "Nuevo inicio de sesión - TicketNow", mensaje)
+
                 return redirect(url_for('perfil'))
             else:
                 error = "Credenciales incorrectas"
@@ -302,6 +314,17 @@ def perfil():
     pedidos = Pedido.query.filter_by(usuarioId=user.id).order_by(Pedido.fecha.desc()).limit(5).all()
     return render_template('perfil.html', usuario=user, pedidos=pedidos)
 
+@app.route('/pedido/<int:id>')
+def detalle_pedido(id):
+    user = get_current_user()
+    if not user:
+        return redirect(url_for('auth'))
+    pedido = Pedido.query.get_or_404(id)
+    if pedido.usuarioId != user.id and user.rol != 'admin':
+        flash('No tienes permiso para ver este pedido.', 'error')
+        return redirect(url_for('perfil'))
+    return render_template('detalle_pedido.html', usuario=user, pedido=pedido)
+
 @app.route('/carrito', methods=['GET', 'POST'])
 def carrito():
     user = get_current_user()
@@ -349,6 +372,31 @@ def carrito():
                     
                     db.session.commit()
                     success = True
+
+                    # Send purchase receipt email
+                    from email_utils import enviar_correo
+                    from datetime import datetime
+                    
+                    detalles_html = ""
+                    for item in cart:
+                        detalles_html += f"<li>{item.get('quantity', 1)}x {item.get('name', 'Item')} - ${item.get('price', 0)}</li>"
+                    
+                    mensaje = f\"\"\"
+                    <h2>¡Gracias por tu compra, {user.nombre}!</h2>
+                    <p>Tu pedido <strong>#ORD-{nuevo_pedido.id}</strong> ha sido confirmado.</p>
+                    <p><strong>Fecha:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+                    <br>
+                    <h3>Detalles de la compra:</h3>
+                    <ul>
+                        {detalles_html}
+                    </ul>
+                    <p><strong>Total pagado:</strong> ${"%.2f" % total}</p>
+                    <br>
+                    <p>Puedes ver el detalle completo en tu <a href="https://ticketnow-html.vercel.app/pedido/{nuevo_pedido.id}">perfil de TicketNow</a>.</p>
+                    \"\"\"
+                    enviar_correo(user.email, f"Confirmación de Pedido #ORD-{nuevo_pedido.id}", mensaje)
+
+
             except Exception as e:
                 print(e)
                 error = "Hubo un error al procesar tu pago."
