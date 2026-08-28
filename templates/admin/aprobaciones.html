@@ -48,7 +48,7 @@
                             <div>
                                 <p class="font-bold text-gray-900 dark:text-white">{% if sol.usuario %}{{ sol.usuario.nombre }}{% else %}Usuario Eliminado{% endif %}</p>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">{% if sol.usuario %}{{ sol.usuario.email }}{% endif %}</p>
-                                <p class="text-xs text-gray-400 mt-2">Fecha: {{ sol.fechaSolicitud.strftime('%d/%m/%Y %H:%M') }}</p>
+                                <p class="text-xs text-gray-400 mt-2">Fecha: {{ sol.fecha.strftime('%d/%m/%Y %H:%M') }}</p>
                             </div>
                             <div class="flex flex-col gap-2">
                                 <form method="POST" action="/admin/aprobaciones">
