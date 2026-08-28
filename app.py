@@ -839,7 +839,8 @@ def editar_mercancia(id):
         tallas = request.form.getlist('talla[]')
         stocks = request.form.getlist('stock[]')
         
-        InventarioMercancia.query.filter_by(mercancia_id=mercancia.id).delete()
+        for inv in mercancia.inventario:
+            db.session.delete(inv)
         
         for talla, stock in zip(tallas, stocks):
             if talla.strip() and stock.strip():
