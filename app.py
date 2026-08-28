@@ -799,8 +799,14 @@ def admin_mercancia():
                 imagenUrl=request.form.get('imagenUrl')
             )
             db.session.add(m)
+            db.session.flush() # Para obtener m.id
+            
+            stock_inicial = int(request.form.get('stock') or 0)
+            inv = InventarioMercancia(mercancia_id=m.id, talla='Única', stock=stock_inicial)
+            db.session.add(inv)
+            
             db.session.commit()
-            log_auditoria("Agregar Mercancia", "Mercancia", f"ID: {m.id}")
+            log_auditoria("Agregar Mercancia", "Mercancia", f"ID: {m.id}, Stock: {stock_inicial}")
             flash("Mercancia agregada")
         elif action == 'toggle':
             m_id = request.form.get('id')
