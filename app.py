@@ -2,6 +2,9 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from models import db, Usuario, Evento, Noticia, Mercancia, PreguntaFrecuente, CarritoItem, Pedido, PedidoItem, Auditoria, MensajeChat, TipoBoleto, SolicitudVip
 
+from itsdangerous import URLSafeTimedSerializer
+from email_utils import enviar_correo
+
 app = Flask(__name__)
 app.secret_key = 'ticketnow_secret_key_flask'
 
@@ -135,6 +138,58 @@ def auth():
 def logout():
     session.pop('userId', None)
     return redirect(url_for('index'))
+
+@app.route('/olvide-password', methods=['GET', 'POST'])
+def olvide_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = Usuario.query.filter_by(email=email).first()
+        if user:
+            s = URLSafeTimedSerializer(app.secret_key)
+            token = s.dumps(user.email, salt='password-reset-salt')
+            reset_url = url_for('reset_password', token=token, _external=True)
+            
+            html = f'''
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #6b21a8;">Restablecer tu contraseña</h2>
+                <p>Hola {user.nombre},</p>
+                <p>Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para crear una nueva:</p>
+                <p style="text-align: center; margin: 30px 0;">
+                    <a href="{reset_url}" style="background-color: #9333ea; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">Restablecer Contraseña</a>
+                </p>
+                <p>Si no fuiste tú quien solicitó esto, simplemente ignora este correo.</p>
+                <p>El enlace caducará en 1 hora.</p>
+                <hr style="border: 1px solid #eee; margin: 30px 0;" />
+                <p style="color: #888; font-size: 12px; text-align: center;">El equipo de TicketNow</p>
+            </div>
+            '''
+            enviar_correo(user.email, "Restablecer contraseña - TicketNow", html)
+            
+        flash('Si el correo está registrado, recibirás un enlace para restablecer tu contraseña.', 'info')
+        return redirect(url_for('auth'))
+        
+    return render_template('olvide_password.html')
+
+@app.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    s = URLSafeTimedSerializer(app.secret_key)
+    try:
+        email = s.loads(token, salt='password-reset-salt', max_age=3600)
+    except Exception:
+        flash('El enlace para restablecer la contraseña es inválido o ha expirado.', 'error')
+        return redirect(url_for('auth'))
+        
+    if request.method == 'POST':
+        password = request.form.get('password')
+        user = Usuario.query.filter_by(email=email).first()
+        if user:
+            user.password = password
+            db.session.commit()
+            flash('Tu contraseña ha sido actualizada correctamente. Ya puedes iniciar sesión.', 'success')
+            return redirect(url_for('auth'))
+            
+    return render_template('reset_password.html', token=token)
+
 
 @app.route('/eventos')
 def eventos():
@@ -457,10 +512,24 @@ def log_auditoria(accion, tabla=None, detalle=None):
         db.session.add(aud)
         db.session.commit()
 
-@app.route('/perfil/info')
+@app.route('/perfil/info', methods=['GET', 'POST'])
 def perfil_info():
     user = get_current_user()
     if not user: return redirect(url_for('auth'))
+    
+    if request.method == 'POST':
+        password_actual = request.form.get('password_actual')
+        nueva_password = request.form.get('nueva_password')
+        
+        if user.password == password_actual:
+            user.password = nueva_password
+            db.session.commit()
+            flash('Tu contraseña ha sido actualizada correctamente.', 'success')
+        else:
+            flash('La contraseña actual es incorrecta.', 'error')
+            
+        return redirect(url_for('perfil_info'))
+        
     return render_template('perfil_info.html', usuario=user)
 
 @app.route('/perfil/pagos')
@@ -476,7 +545,9 @@ def admin_dashboard():
     stats = {
         'usuarios': Usuario.query.count(),
         'ventas': sum([p.total for p in Pedido.query.all()]),
-        'eventos': Evento.query.count()
+        'eventos': Evento.query.count(),
+        'pedidos_pendientes': Pedido.query.filter_by(estado='Pendiente').count(),
+        'solicitudes_vip': SolicitudVip.query.filter_by(estado='Pendiente').count()
     }
     return render_template('admin/dashboard.html', usuario=user, stats=stats)
 
