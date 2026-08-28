@@ -237,7 +237,7 @@ def noticia_detalle(id):
 def tienda():
     user = get_current_user()
     
-    eventos_db = Evento.query.filter_by(activo=True).order_by(Evento.fecha.asc()).limit(3).all()
+    eventos_db = Evento.query.filter_by(activo=True).order_by(Evento.fecha.asc()).all()
     eventos = []
     colores = [
         {"bg": "from-purple-800 to-purple-400", "txt": "text-purple-600 dark:text-purple-400", "tag": "bg-purple-100 dark:bg-purple-600/20"},
@@ -257,7 +257,7 @@ def tienda():
             'imagen': e.imagenUrl
         })
 
-    mercancia_db = Mercancia.query.filter_by(activo=True).limit(3).all()
+    mercancia_db = Mercancia.query.filter_by(activo=True).all()
     mercancia = [{
         'id': m.id,
         'cat': m.categoria,
@@ -602,7 +602,7 @@ def admin_eventos():
             import datetime
             try:
                 fecha_str = request.form.get('fecha')
-                fecha_obj = datetime.datetime.strptime(fecha_str, '%Y-%m-%dT%H:%M') if fecha_str else datetime.datetime.utcnow()
+                fecha_obj = datetime.datetime.fromisoformat(fecha_str) if fecha_str else datetime.datetime.utcnow()
                 e = Evento(
                     titulo=request.form.get('titulo'),
                     descripcion=request.form.get('descripcion'),
