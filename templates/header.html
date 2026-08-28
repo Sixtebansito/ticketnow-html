@@ -135,7 +135,7 @@
         setInterval(updateCartBadge, 1000);
 
         // Animación de Vuelo y Notificación (Toast) al agregar al carrito
-        document.addEventListener('itemAddedToCart', ((e) => {
+        document.addEventListener('itemAddedToCart', (e) => {
             const { startX, startY, title, bgClass } = e.detail;
             const cartIcon = document.querySelector('a[href="/carrito"]');
             if (!cartIcon) return;
