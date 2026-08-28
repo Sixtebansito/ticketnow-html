@@ -16,7 +16,7 @@
                     <h2 class="z-10 w-full max-w-4xl mx-auto text-4xl md:text-5xl font-extrabold text-white mb-6 drop-shadow-lg tracking-tight">
                         Tus Conciertos<br>En todo lugar.
                     </h2>
-                    <a href="#suscripcion" class="inline-block z-10">
+                    <a href="/descargar" class="inline-block z-10">
                         <button class="px-8 py-3.5 text-sm font-bold text-white transition-colors duration-300 bg-purple-600 rounded-full shadow-xl hover:bg-purple-500 shadow-purple-600/30 whitespace-nowrap">
                             Descargar APP
                         </button>
@@ -237,7 +237,45 @@
         });
     };
 
-    document.addEventListener('DOMContentLoaded', setupBuscadores);
+    const setupSmoothScrollSlow = () => {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const target = document.querySelector(targetId);
+                if (target) {
+                    e.preventDefault();
+                    const targetPosition = target.getBoundingClientRect().top + window.scrollY - 80;
+                    const startPosition = window.scrollY;
+                    const distance = targetPosition - startPosition;
+                    const duration = 1200; // 1.2 seconds, slower scroll
+                    let start = null;
+
+                    window.requestAnimationFrame(function step(timestamp) {
+                        if (!start) start = timestamp;
+                        const progress = timestamp - start;
+                        let percentage = progress / duration;
+                        if (percentage > 1) percentage = 1;
+                        // Ease in out cubic for a very smooth slow motion
+                        const ease = percentage < 0.5 ? 4 * percentage * percentage * percentage : 1 - Math.pow(-2 * percentage + 2, 3) / 2;
+                        window.scrollTo(0, startPosition + distance * ease);
+                        if (progress < duration) {
+                            window.requestAnimationFrame(step);
+                        } else {
+                            // Update URL hash without jumping
+                            window.history.pushState(null, '', targetId);
+                        }
+                    });
+                }
+            });
+        });
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setupBuscadores();
+        setupSmoothScrollSlow();
+    });
 </script>
 
 <main class="pt-10 pb-20 transition-colors duration-300 bg-gray-50 dark:bg-[#0a0a0e]" id="como-funciona">
@@ -429,7 +467,7 @@
     </section>
 
     <section id="suscripcion" class="px-6 py-10 mx-auto mb-10 max-w-7xl">
-        <div class="bg-gradient-to-r from-purple-50 to-white dark:from-[#1b0d40] dark:to-[#0a0618] rounded-4xl p-10 md:p-16 flex flex-col md:flex-row items-center justify-between border border-purple-200 dark:border-purple-900/50 relative overflow-hidden">
+        <div class="bg-gradient-to-r from-purple-50 to-white dark:from-[#1b0d40] dark:to-[#0a0618] rounded-[2.5rem] p-10 md:p-16 flex flex-col md:flex-row items-center justify-between border border-purple-200 dark:border-purple-900/50 relative overflow-hidden shadow-2xl hover:shadow-purple-500/20 transform hover:-translate-y-2 transition-all duration-500">
             <div class="absolute top-0 right-0 w-1/2 h-full rounded-full bg-purple-600/5 dark:bg-purple-600/10 blur-3xl"></div>
             
             <div class="z-10 max-w-lg mb-10 md:mb-0">
@@ -597,7 +635,31 @@
             });
         });
     };
-
+    const setupBuscadorRedirect = () => {
+        const input = document.querySelector('.input-buscador');
+        const btn = document.querySelector('.btn-ejecutar-busqueda');
+        if (!input) return;
+        
+        const redirect = () => {
+            const val = input.value.trim();
+            if (val) window.location.href = '/eventos?q=' + encodeURIComponent(val);
+            else window.location.href = '/eventos';
+        };
+        
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                redirect();
+            }
+        });
+        
+        if(btn) {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                redirect();
+            });
+        }
+    };
     const setupModalComprar = () => {
         const modal = document.getElementById('modal-comprar');
         if(!modal) return;
