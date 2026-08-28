@@ -339,9 +339,12 @@
                                 Ver Detalles
                             </a>
                             
-                            <a href="{{ url_for('detalle_evento', id=ev.id) }}" class="w-1/2 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-purple-600/40 flex items-center justify-center">
+                            <button type="button" class="btn-abrir-modal w-1/2 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-purple-600/40 flex items-center justify-center"
+                                data-id="{{ ev.id }}"
+                                data-nombre="{{ ev.tit }}"
+                                data-boletos="{{ ev.boletos_json|forceescape }}">
                                 Comprar
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -575,6 +578,131 @@
         });
     };
 
-    document.addEventListener('DOMContentLoaded', initBotonesEventoYProducto);
+    const setupModalComprar = () => {
+        const modal = document.getElementById('modal-comprar');
+        if(!modal) return;
+        const btnCerrar = document.getElementById('btn-cerrar-modal');
+        const titulo = document.getElementById('modal-titulo');
+        const contBoletos = document.getElementById('modal-boletos');
+        const btnAgregar = document.getElementById('btn-agregar-carrito');
+        const textoAgregar = document.getElementById('btn-agregar-texto');
+        
+        let currentEventId = null;
+        let currentEventTitle = null;
+
+        const closeModal = () => {
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            modal.children[0].classList.remove('scale-100');
+            modal.children[0].classList.add('scale-95');
+            setTimeout(() => { modal.classList.replace('flex', 'hidden'); }, 300);
+        };
+
+        const openModal = (id, nombre, boletos) => {
+            currentEventId = id;
+            currentEventTitle = nombre;
+            titulo.textContent = nombre;
+            
+            contBoletos.innerHTML = '';
+            if (boletos.length === 0) {
+                contBoletos.innerHTML = '<p class="text-sm text-gray-500 italic">No hay boletos disponibles.</p>';
+                btnAgregar.disabled = true;
+                btnAgregar.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                btnAgregar.disabled = false;
+                btnAgregar.classList.remove('opacity-50', 'cursor-not-allowed');
+                boletos.forEach((b, index) => {
+                    const label = document.createElement('label');
+                    label.className = "flex items-center justify-between p-4 border rounded-xl cursor-pointer hover:border-purple-500 transition-colors bg-white dark:bg-[#1a1a24] border-gray-200 dark:border-white/10 has-[:checked]:border-purple-600 has-[:checked]:bg-purple-50 dark:has-[:checked]:bg-purple-900/20";
+                    label.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <input type="radio" name="tipoBoletoModal" value="${b.id}" data-precio="${b.precio}" data-nombre="${b.nombre}" class="w-5 h-5 text-purple-600 border-gray-300 focus:ring-purple-600 dark:bg-[#12121a] dark:border-white/20" ${index === 0 ? 'checked' : ''}>
+                            <span class="font-bold text-gray-900 dark:text-white">${b.nombre}</span>
+                        </div>
+                        <span class="text-xl font-black text-purple-600 dark:text-purple-400">$${b.precio.toFixed(2)}</span>
+                    `;
+                    contBoletos.appendChild(label);
+                });
+            }
+
+            modal.classList.replace('hidden', 'flex');
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0');
+                modal.classList.add('opacity-100');
+                modal.children[0].classList.remove('scale-95');
+                modal.children[0].classList.add('scale-100');
+            });
+        };
+
+        document.querySelectorAll('.btn-abrir-modal').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const id = btn.getAttribute('data-id');
+                const nombre = btn.getAttribute('data-nombre');
+                const boletosStr = btn.getAttribute('data-boletos');
+                let boletos = [];
+                try {
+                    boletos = JSON.parse(boletosStr || '[]');
+                } catch(err) {
+                    console.error("Error parseando boletos:", err);
+                }
+                openModal(id, nombre, boletos);
+            });
+        });
+
+        btnCerrar.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        btnAgregar.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (btnAgregar.disabled) return;
+
+            const selectedTipo = document.querySelector('input[name="tipoBoletoModal"]:checked');
+            if (!selectedTipo) return alert('Por favor, selecciona un tipo de entrada.');
+            
+            const itemData = {
+                id: currentEventId,
+                tipo_id: selectedTipo.value,
+                type: 'evento',
+                title: currentEventTitle + ' (' + selectedTipo.getAttribute('data-nombre') + ')',
+                category: 'Evento',
+                price: parseFloat(selectedTipo.getAttribute('data-precio')),
+                quantity: 1
+            };
+            
+            const cart = JSON.parse(localStorage.getItem('ticketnow_cart')) || [];
+            cart.push(itemData);
+            localStorage.setItem('ticketnow_cart', JSON.stringify(cart));
+            
+            const eventBtn = document.querySelector(`.btn-abrir-modal[data-id="${currentEventId}"]`);
+            if (eventBtn) {
+                const rect = eventBtn.getBoundingClientRect();
+                const startX = rect.left + rect.width / 2;
+                const startY = rect.top + rect.height / 2;
+                document.dispatchEvent(new CustomEvent('itemAddedToCart', {
+                    detail: { startX, startY, title: itemData.title, bgClass: 'from-purple-500 to-indigo-500' }
+                }));
+            }
+            
+            textoAgregar.textContent = '¡Agregado!';
+            btnAgregar.classList.replace('from-purple-600', 'from-green-500');
+            btnAgregar.classList.replace('to-indigo-600', 'to-emerald-500');
+            
+            setTimeout(() => {
+                textoAgregar.textContent = 'Agregar al Carrito';
+                btnAgregar.classList.replace('from-green-500', 'from-purple-600');
+                btnAgregar.classList.replace('to-emerald-500', 'to-indigo-600');
+                closeModal();
+            }, 800);
+        });
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setupBuscadorRedirect();
+        initBotonesEventoYProducto();
+        setupModalComprar();
+    });
 </script>
 {% endblock %}

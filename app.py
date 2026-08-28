@@ -99,18 +99,29 @@ def index():
         landing_gif = 'https://www.image2url.com/r2/default/gifs/1787878685830-94dc7db9-4f10-4216-87d5-c1a594f53291.gif'
     
     eventos_db = Evento.query.filter_by(activo=True).order_by(Evento.fecha.asc()).limit(3).all()
-    eventos = [{
-        'id': e.id,
-        'cat': e.categoria,
-        'tit': e.titulo,
-        'precio': f'${e.precio_desde:.2f}',
-        'fecha': e.fecha.strftime('%d %b %Y') if e.fecha else 'Por confirmar',
-        'lugar': e.lugar,
-        'bg': 'from-purple-800 to-purple-400',
-        'txt': 'text-purple-600 dark:text-purple-400',
-        'tag': 'bg-purple-100 dark:bg-purple-600/20',
-        'imagen': e.imagenUrl
-    } for e in eventos_db]
+    import json
+    eventos = []
+    colores = [
+        {"bg": "from-purple-800 to-purple-400", "txt": "text-purple-600 dark:text-purple-400", "tag": "bg-purple-100 dark:bg-purple-600/20"},
+        {"bg": "from-blue-800 to-blue-400", "txt": "text-blue-600 dark:text-blue-400", "tag": "bg-blue-100 dark:bg-blue-600/20"},
+        {"bg": "from-orange-800 to-orange-400", "txt": "text-orange-700 dark:text-orange-400", "tag": "bg-orange-100 dark:bg-orange-500/20"}
+    ]
+    for i, e in enumerate(eventos_db):
+        c = colores[i % len(colores)]
+        boletos_json = json.dumps([{'id': b.id, 'nombre': b.nombre, 'precio': float(b.precio)} for b in e.tiposBoleto])
+        eventos.append({
+            'id': e.id,
+            'cat': e.categoria or 'Evento',
+            'tit': e.titulo,
+            'precio': f'${e.precio_desde:.2f}',
+            'boletos_json': boletos_json,
+            'fecha': e.fecha.strftime('%d %b %Y') if e.fecha else 'Por confirmar',
+            'lugar': e.lugar,
+            'bg': c['bg'],
+            'txt': c['txt'],
+            'tag': c['tag'],
+            'imagen': e.imagenUrl
+        })
 
     noticias = Noticia.query.filter_by(activo=True).order_by(Noticia.fechaPub.desc()).limit(3).all()
 
@@ -280,7 +291,7 @@ def eventos():
     import json
     for i, e in enumerate(eventos_db):
         c = colores[i % len(colores)]
-        boletos_json = json.dumps([{'id': b.id, 'nombre': b.nombre, 'precio': float(b.precio)} for b in e.tipos_boletos if b.activo])
+        boletos_json = json.dumps([{'id': b.id, 'nombre': b.nombre, 'precio': float(b.precio)} for b in e.tiposBoleto])
         eventos.append({
             'id': e.id,
             'cat': e.categoria or 'Evento',
