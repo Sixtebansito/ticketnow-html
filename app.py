@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
-from models import db, Usuario, Evento, Noticia, Mercancia, PreguntaFrecuente, CarritoItem, Pedido, PedidoItem, Auditoria, MensajeChat
+from models import db, Usuario, Evento, Noticia, Mercancia, PreguntaFrecuente, CarritoItem, Pedido, PedidoItem, Auditoria, MensajeChat, TipoBoleto
 
 app = Flask(__name__)
 app.secret_key = 'ticketnow_secret_key_flask'
@@ -228,12 +228,12 @@ def detalle_evento(id):
 def setup_db():
     try:
         from sqlalchemy import text
-        # Intentar añadir columnas a las tablas si no existen
-        db.session.execute(text("ALTER TABLE evento ADD COLUMN IF NOT EXISTS categoria VARCHAR(255);"))
-        db.session.execute(text("ALTER TABLE mercancia ADD COLUMN IF NOT EXISTS categoria VARCHAR(255);"))
+        # Intentar añadir columnas a las tablas si no existen. Las comillas dobles aseguran que respete las mayúsculas en PostgreSQL
+        db.session.execute(text('ALTER TABLE "Evento" ADD COLUMN IF NOT EXISTS categoria VARCHAR(255);'))
+        db.session.execute(text('ALTER TABLE "Mercancia" ADD COLUMN IF NOT EXISTS categoria VARCHAR(255);'))
         
         # También asegurar que imagenUrl esté en mercancia si no estaba
-        db.session.execute(text("ALTER TABLE mercancia ADD COLUMN IF NOT EXISTS imagen_url VARCHAR(255);"))
+        db.session.execute(text('ALTER TABLE "Mercancia" ADD COLUMN IF NOT EXISTS "imagenUrl" VARCHAR(255);'))
         
         db.session.commit()
         return "Base de datos actualizada correctamente. <a href='/'>Volver al inicio</a>"
