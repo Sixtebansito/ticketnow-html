@@ -403,6 +403,34 @@ def admin_dashboard():
     }
     return render_template('admin/dashboard.html', usuario=user, stats=stats)
 
+@app.route('/admin/aprobaciones', methods=['GET', 'POST'])
+def admin_aprobaciones():
+    user = get_current_user()
+    if not user or user.rol != 'admin': return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        action = request.form.get('action')
+        solicitud_id = request.form.get('id')
+        req_type = request.form.get('type')
+        
+        if req_type == 'vip' and solicitud_id:
+            solicitud = SolicitudVip.query.get(solicitud_id)
+            if solicitud:
+                if action == 'aprobar':
+                    solicitud.estado = 'aprobada'
+                    if solicitud.usuario:
+                        solicitud.usuario.esVip = True
+                    flash('Solicitud VIP aprobada correctamente.', 'success')
+                elif action == 'rechazar':
+                    solicitud.estado = 'rechazada'
+                    flash('Solicitud VIP rechazada.', 'success')
+                db.session.commit()
+                
+        return redirect(url_for('admin_aprobaciones'))
+
+    solicitudes = SolicitudVip.query.filter_by(estado='pendiente').all()
+    return render_template('admin/aprobaciones.html', usuario=user, solicitudes=solicitudes)
+
 @app.route('/admin/eventos', methods=['GET', 'POST'])
 def admin_eventos():
     user = get_current_user()

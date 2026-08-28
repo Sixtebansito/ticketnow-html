@@ -11,7 +11,7 @@
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Hola, {{ usuario.nombre }}</h1>
                 <p class="text-gray-500 dark:text-gray-400">
-                    {% if usuario.rol == 'admin' %}Administrador{% else %}Miembro VIP Premium{% endif %} 
+                    {% if usuario.rol == 'admin' %}Administrador{% elif usuario.esVip %}Miembro VIP Premium{% else %}Cliente Estándar{% endif %} 
                     • Miembro desde {{ usuario.fechaRegistro.strftime('%Y') }}
                 </p>
             </div>
