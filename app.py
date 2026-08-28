@@ -91,8 +91,12 @@ def index():
     user = get_current_user()
     
     # Obtener configuración del GIF
-    conf_gif = Configuracion.query.filter_by(clave='landing_gif').first()
-    landing_gif = conf_gif.valor if conf_gif and conf_gif.valor else 'https://www.image2url.com/r2/default/gifs/1787878685830-94dc7db9-4f10-4216-87d5-c1a594f53291.gif'
+    try:
+        conf_gif = Configuracion.query.filter_by(clave='landing_gif').first()
+        landing_gif = conf_gif.valor if conf_gif and conf_gif.valor else 'https://www.image2url.com/r2/default/gifs/1787878685830-94dc7db9-4f10-4216-87d5-c1a594f53291.gif'
+    except Exception:
+        db.session.rollback()
+        landing_gif = 'https://www.image2url.com/r2/default/gifs/1787878685830-94dc7db9-4f10-4216-87d5-c1a594f53291.gif'
     
     eventos_db = Evento.query.filter_by(activo=True).order_by(Evento.fecha.asc()).limit(3).all()
     eventos = [{
