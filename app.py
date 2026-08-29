@@ -257,6 +257,33 @@ def olvide_password():
         
     return render_template('olvide_password.html')
 
+@app.route('/recuperar-usuario', methods=['GET', 'POST'])
+def recuperar_usuario():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = Usuario.query.filter_by(email=email).first()
+        if user:
+            html = f'''
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #6b21a8;">Recuperación de Usuario</h2>
+                <p>Hola {user.nombre},</p>
+                <p>Has solicitado recuperar tu nombre de usuario de TicketNow.</p>
+                <p style="text-align: center; margin: 30px 0; padding: 20px; background: #f3f4f6; border-radius: 8px;">
+                    Tu nombre de usuario es: <strong style="font-size: 1.2em; color: #9333ea;">{user.username}</strong>
+                </p>
+                <p>Si no fuiste tú quien solicitó esto, simplemente ignora este correo.</p>
+                <hr style="border: 1px solid #eee; margin: 30px 0;" />
+                <p style="color: #888; font-size: 12px; text-align: center;">El equipo de TicketNow</p>
+            </div>
+            '''
+            enviar_correo(user.email, "Tu nombre de usuario - TicketNow", html)
+            
+        flash('Si el correo está registrado, recibirás un mensaje con tu nombre de usuario.', 'info')
+        return redirect(url_for('auth'))
+        
+    return render_template('recuperar_usuario.html')
+
+
 @app.route('/reset-password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     s = URLSafeTimedSerializer(app.secret_key)

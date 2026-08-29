@@ -30,7 +30,10 @@
         <form id="login-form" class="space-y-4" method="POST">
             <input type="hidden" name="action" value="login" />
             <div>
-                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-1.5">Usuario</label>
+                <div class="flex justify-between items-center mb-1.5">
+                    <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Usuario</label>
+                    <a href="{{ url_for('recuperar_usuario') }}" class="text-[11px] text-purple-600 dark:text-purple-400 hover:underline font-medium">¿Olvidaste tu usuario?</a>
+                </div>
                 <input type="text" name="username" required placeholder="tu_usuario" class="w-full bg-gray-50 dark:bg-[#1a1a24] border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors">
             </div>
             <div>

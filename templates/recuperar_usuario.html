@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Recuperar Usuario - TicketNow{% endblock %}
+
+{% block content %}
+<main class="min-h-screen pt-32 pb-20 bg-gray-50 dark:bg-[#0a0a0e] transition-colors duration-300 flex items-center justify-center">
+    <div class="w-full max-w-md px-6">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-yellow-500">
+                TicketNow
+            </h1>
+            <h2 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Recuperar Usuario</h2>
+            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Ingresa tu correo y te enviaremos tu nombre de usuario.</p>
+        </div>
+
+        <div class="p-8 bg-white border shadow-xl border-gray-200/50 dark:bg-[#12121a] dark:border-white/5 rounded-3xl relative overflow-hidden group">
+            
+            <form method="POST" action="{{ url_for('recuperar_usuario') }}" class="relative z-10 space-y-5">
+                <div>
+                    <label class="block mb-1.5 text-xs font-bold tracking-wide text-gray-700 uppercase dark:text-gray-300">Correo Electrónico</label>
+                    <input type="email" name="email" required placeholder="tu@correo.com" class="w-full px-4 py-3 text-sm text-gray-900 transition-colors border border-gray-300 bg-gray-50 dark:bg-[#1a1a24] dark:border-white/10 rounded-xl dark:text-white focus:outline-none focus:border-purple-500">
+                </div>
+                
+                <button type="submit" class="w-full py-3.5 px-4 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white font-bold rounded-xl shadow-lg shadow-purple-500/30 transform hover:-translate-y-0.5 transition-all">
+                    Enviar Nombre de Usuario
+                </button>
+
+                <p class="mt-6 text-sm text-center text-gray-500 dark:text-gray-400">
+                    <a href="{{ url_for('auth') }}" class="font-bold text-purple-600 transition-colors dark:text-purple-400 hover:text-purple-500">Volver a iniciar sesión</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}
