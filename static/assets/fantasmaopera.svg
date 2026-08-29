@@ -1,0 +1,207 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="100%" height="100%">
+  <defs>
+    <!-- Gradients -->
+    <radialGradient id="bgSpotlight" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#3d0000"/>
+      <stop offset="50%" stop-color="#140000"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </radialGradient>
+
+    <linearGradient id="maskGrad" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#f8f8ff"/>
+      <stop offset="85%" stop-color="#dcdcdc"/>
+      <stop offset="100%" stop-color="#999999"/>
+    </linearGradient>
+
+    <linearGradient id="goldText" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c5a059"/>
+      <stop offset="30%" stop-color="#f4d068"/>
+      <stop offset="50%" stop-color="#fff0a8"/>
+      <stop offset="70%" stop-color="#f4d068"/>
+      <stop offset="100%" stop-color="#c5a059"/>
+    </linearGradient>
+
+    <linearGradient id="curtainDark" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1a0000"/>
+      <stop offset="50%" stop-color="#4d0000"/>
+      <stop offset="100%" stop-color="#1a0000"/>
+    </linearGradient>
+
+    <linearGradient id="curtainLight" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4a0000"/>
+      <stop offset="50%" stop-color="#8a0000"/>
+      <stop offset="100%" stop-color="#4a0000"/>
+    </linearGradient>
+
+    <!-- Filters -->
+    <filter id="dropShadow" x="-20%" y="-20%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="12" stdDeviation="15" flood-color="#000000" flood-opacity="0.8"/>
+    </filter>
+
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="heavyGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="1000" fill="url(#bgSpotlight)" />
+
+  <!-- Background Chandelier Silhouette -->
+  <g stroke="#ffffff" fill="none" opacity="0.06" transform="translate(400, 320)">
+    <line x1="0" y1="-250" x2="0" y2="100" stroke-width="2"/>
+    <path d="M -200,-50 Q 0,0 200,-50" stroke-width="3"/>
+    <path d="M -300,30 Q 0,100 300,30" stroke-width="4"/>
+    
+    <!-- Crystals Tier 1 -->
+    <line x1="-200" y1="-50" x2="-200" y2="-20"/>
+    <line x1="-130" y1="-38" x2="-130" y2="-8"/>
+    <line x1="-65" y1="-28" x2="-65" y2="2"/>
+    <line x1="0" y1="-25" x2="0" y2="5"/>
+    <line x1="65" y1="-28" x2="65" y2="2"/>
+    <line x1="130" y1="-38" x2="130" y2="-8"/>
+    <line x1="200" y1="-50" x2="200" y2="-20"/>
+
+    <!-- Crystals Tier 2 -->
+    <line x1="-300" y1="30" x2="-300" y2="70"/>
+    <line x1="-225" y1="48" x2="-225" y2="88"/>
+    <line x1="-150" y1="62" x2="-150" y2="102"/>
+    <line x1="-75" y1="71" x2="-75" y2="111"/>
+    <line x1="0" y1="75" x2="0" y2="115"/>
+    <line x1="75" y1="71" x2="75" y2="111"/>
+    <line x1="150" y1="62" x2="150" y2="102"/>
+    <line x1="225" y1="48" x2="225" y2="88"/>
+    <line x1="300" y1="30" x2="300" y2="70"/>
+  </g>
+
+  <!-- Side Curtains (Deep Red framing) -->
+  <path d="M 0,0 L 120,0 Q 60,300 80,600 Q 120,900 0,1000 Z" fill="url(#curtainDark)"/>
+  <path d="M 0,0 L 60,0 Q 20,300 40,600 Q 60,900 0,1000 Z" fill="url(#curtainLight)" opacity="0.7"/>
+  <path d="M 800,0 L 680,0 Q 740,300 720,600 Q 680,900 800,1000 Z" fill="url(#curtainDark)"/>
+  <path d="M 800,0 L 740,0 Q 780,300 760,600 Q 740,900 800,1000 Z" fill="url(#curtainLight)" opacity="0.7"/>
+
+  <!-- Top Drape -->
+  <path d="M 0,0 Q 200,100 400,20 Q 600,100 800,0 L 800,-20 L 0,-20 Z" fill="url(#curtainDark)" filter="url(#dropShadow)"/>
+  <path d="M 0,0 Q 200,60 400,0 Q 600,60 800,0 L 800,-20 L 0,-20 Z" fill="url(#curtainLight)" opacity="0.8"/>
+
+  <!-- Title Typography -->
+  <g text-anchor="middle" filter="url(#dropShadow)">
+    <text x="400" y="160" font-family="'Didot', 'Bodoni MT', 'Times New Roman', serif" font-size="56" font-weight="bold" fill="url(#goldText)" letter-spacing="14">EL FANTASMA</text>
+    <text x="400" y="225" font-family="'Didot', 'Bodoni MT', 'Times New Roman', serif" font-size="32" font-weight="normal" fill="#f4f4f4" letter-spacing="22">DE LA ÓPERA</text>
+  </g>
+
+  <!-- THE PHANTOM'S MASK -->
+  <g filter="url(#dropShadow)">
+    <!-- Main Mask Silhouette -->
+    <path d="
+      M 400 280
+      C 450 260, 520 285, 545 350
+      C 570 410, 560 490, 520 540
+      C 480 590, 440 620, 410 615
+      C 380 610, 395 560, 410 520
+      C 425 480, 430 440, 415 400
+      C 400 360, 370 330, 360 305
+      C 350 280, 370 290, 400 280
+      Z" fill="url(#maskGrad)" />
+      
+    <!-- 3D Contour Shadows for depth on the mask -->
+    <path d="
+      M 400 280
+      C 430 300, 450 360, 435 410
+      C 420 460, 420 520, 410 615
+      C 440 610, 470 580, 495 540
+      C 530 480, 540 400, 520 340
+      C 500 280, 450 260, 400 280
+      Z" fill="#000000" opacity="0.12" />
+
+    <path d="
+      M 400 280
+      C 380 300, 385 330, 405 370
+      C 420 400, 415 450, 400 490
+      C 390 515, 385 540, 395 560
+      C 405 520, 415 480, 405 440
+      C 390 390, 370 340, 400 280
+      Z" fill="#ffffff" opacity="0.6" />
+
+    <!-- Eye Hole -->
+    <path d="
+      M 445 375
+      C 475 365, 510 375, 515 395
+      C 520 415, 495 435, 465 435
+      C 435 435, 425 410, 445 375
+      Z" fill="#050505" />
+      
+    <!-- Edge Highlight around Eye -->
+    <path d="
+      M 445 375
+      C 475 365, 510 375, 515 395
+      C 520 415, 495 435, 465 435
+      C 435 435, 425 410, 445 375
+      Z" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5"/>
+  </g>
+
+  <!-- THE ROSE -->
+  <g id="elegant-rose" transform="translate(340, 560) rotate(-20)" filter="url(#dropShadow)">
+    <!-- Stem -->
+    <path d="M 0,20 Q -80,120 -250,250" fill="none" stroke="#123012" stroke-width="7" stroke-linecap="round"/>
+    
+    <!-- Leaves -->
+    <path d="M -120,135 C -170,110 -190,140 -180,180 C -150,160 -120,170 -120,135 Z" fill="#0f240f"/>
+    <path d="M -115,140 C -160,120 -170,145 -165,175 C -140,160 -115,165 -115,140 Z" fill="#1b3d1b" opacity="0.6"/>
+    
+    <path d="M -70,85 C -30,60 10,75 0,110 C -30,105 -50,120 -70,85 Z" fill="#123012"/>
+    <path d="M -65,88 C -35,68 0,80 -5,105 C -25,100 -45,110 -65,88 Z" fill="#1b3d1b" opacity="0.6"/>
+
+    <!-- Outer Petals (Deep Red/Burgundy) -->
+    <path d="M -50,-10 C -70,-50 -20,-90 20,-65 C 60,-40 50,20 0,35 C -40,50 -70,40 -50,-10 Z" fill="#400000"/>
+    <path d="M -30,-45 C -60,-80 -5,-110 40,-75 C 85,-40 60,35 15,20 C -15,10 -40,-10 -30,-45 Z" fill="#660000"/>
+    <path d="M -10,-25 C -50,-65 -20,-100 30,-75 C 80,-50 50,10 10,-5 C -10,-10 -25,-5 -10,-25 Z" fill="#8b0000"/>
+    
+    <!-- Inner Petals (Bright Crimson/Red) -->
+    <path d="M 5,-35 C -35,-70 20,-90 45,-50 C 70,-10 35,25 15,-5 C 5,-20 0,-15 5,-35 Z" fill="#b30000"/>
+    <path d="M 15,-45 C -10,-70 30,-80 45,-50 C 60,-20 30,5 20,-20 C 15,-30 10,-25 15,-45 Z" fill="#e60000"/>
+    <path d="M 25,-40 C 5,-60 35,-65 40,-45 C 45,-25 25,-5 20,-25 C 18,-32 20,-32 25,-40 Z" fill="#ff1a1a"/>
+    
+    <!-- Center Swirl Detail -->
+    <path d="M 30,-50 C 15,-65 40,-70 48,-55 C 55,-40 38,-30 30,-42 C 25,-50 35,-55 40,-48" fill="none" stroke="#4a0000" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Glowing Atmospheric Particles -->
+  <g fill="#ffb3b3" filter="url(#glow)">
+    <circle cx="270" cy="540" r="2.5" opacity="0.8"/>
+    <circle cx="230" cy="480" r="3" opacity="0.5"/>
+    <circle cx="310" cy="460" r="1.5" opacity="0.9"/>
+    <circle cx="350" cy="510" r="2" opacity="0.6"/>
+    <circle cx="180" cy="410" r="2" opacity="0.4"/>
+    <circle cx="210" cy="580" r="1.5" opacity="0.7"/>
+    <circle cx="450" cy="640" r="2" opacity="0.3"/>
+    <circle cx="390" cy="670" r="1.5" opacity="0.5"/>
+  </g>
+
+  <!-- Dramatic Light Flare / Glow behind the Mask & Rose -->
+  <circle cx="370" cy="500" r="100" fill="#990000" filter="url(#heavyGlow)" opacity="0.15" />
+
+  <!-- Bottom Divider Line -->
+  <g filter="url(#dropShadow)">
+    <line x1="280" y1="840" x2="520" y2="840" stroke="url(#goldText)" stroke-width="1.5"/>
+    <polygon points="400,836 405,840 400,844 395,840" fill="url(#goldText)"/>
+  </g>
+
+  <!-- Date, Time, and Venue Typography -->
+  <g text-anchor="middle" filter="url(#dropShadow)">
+    <text x="400" y="810" font-family="'Trebuchet MS', 'Lucida Sans Unicode', Arial, sans-serif" font-size="20" font-weight="300" fill="#f0f0f0" letter-spacing="7">11 SEPTEMBER 2026 • 12:55</text>
+    <text x="400" y="890" font-family="'Trebuchet MS', 'Lucida Sans Unicode', Arial, sans-serif" font-size="26" font-weight="600" fill="url(#goldText)" letter-spacing="5">TEATRO NACIONAL SUCRE</text>
+  </g>
+</svg>

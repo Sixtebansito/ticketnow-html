@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="75%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#1c0b3b" />
+      <stop offset="50%" stop-color="#0a031a" />
+      <stop offset="100%" stop-color="#020005" />
+    </radialGradient>
+
+    <!-- Glowing Filters -->
+    <filter id="glow-heavy" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="20" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="glow-light" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Planet & Cosmic Gradients -->
+    <linearGradient id="sunGrad" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#FFDD00" />
+      <stop offset="40%" stop-color="#FF4400" />
+      <stop offset="100%" stop-color="#FF0088" />
+    </linearGradient>
+
+    <radialGradient id="planetCyan" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#00FFFF" />
+      <stop offset="60%" stop-color="#0055AA" />
+      <stop offset="100%" stop-color="#000044" />
+    </radialGradient>
+
+    <radialGradient id="planetPink" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FF55FF" />
+      <stop offset="50%" stop-color="#AA00AA" />
+      <stop offset="100%" stop-color="#330044" />
+    </radialGradient>
+
+    <radialGradient id="planetGreen" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#55FF55" />
+      <stop offset="70%" stop-color="#006622" />
+      <stop offset="100%" stop-color="#001100" />
+    </radialGradient>
+
+    <!-- Text Gradient -->
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00FFFF" />
+      <stop offset="25%" stop-color="#0088FF" />
+      <stop offset="50%" stop-color="#FF00FF" />
+      <stop offset="75%" stop-color="#FF5500" />
+      <stop offset="100%" stop-color="#FFDD00" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Space Background -->
+  <rect width="800" height="800" fill="url(#bgGrad)" />
+
+  <!-- Starfield Layer -->
+  <g fill="#ffffff" opacity="0.7">
+    <!-- Tiny Stars -->
+    <circle cx="120" cy="180" r="1" />
+    <circle cx="280" cy="90" r="1.5" opacity="0.9" />
+    <circle cx="680" cy="150" r="1" />
+    <circle cx="750" cy="320" r="2" opacity="0.8" />
+    <circle cx="150" cy="550" r="1.2" />
+    <circle cx="90" cy="720" r="1.8" />
+    <circle cx="580" cy="680" r="1" />
+    <circle cx="730" cy="700" r="1.5" />
+    <circle cx="380" cy="760" r="2" />
+    <circle cx="480" cy="220" r="1" />
+    <circle cx="60" cy="400" r="1" opacity="0.5" />
+    <circle cx="500" cy="80" r="1.5" />
+    <circle cx="220" cy="650" r="1" />
+    <circle cx="320" cy="300" r="1" />
+    
+    <!-- Glowing Stars -->
+    <circle cx="180" cy="350" r="3" fill="#00FFFF" filter="url(#glow-light)" />
+    <circle cx="650" cy="480" r="3" fill="#FF00FF" filter="url(#glow-light)" />
+    <circle cx="250" cy="250" r="2.5" fill="#FFDD00" filter="url(#glow-light)" />
+  </g>
+
+  <!-- Orbital Rings Layer -->
+  <g fill="none" stroke-width="1.5" opacity="0.35">
+    <!-- Inner Orbit -->
+    <ellipse cx="400" cy="420" rx="180" ry="70" stroke="#FF4400" transform="rotate(-15 400 420)" />
+    <!-- Middle Orbit -->
+    <ellipse cx="400" cy="420" rx="280" ry="110" stroke="#00FFFF" transform="rotate(12 400 420)" />
+    <!-- Outer Orbit -->
+    <ellipse cx="400" cy="420" rx="360" ry="150" stroke="#FF00FF" transform="rotate(-8 400 420)" />
+  </g>
+
+  <!-- Acoustic/Energy Waves emanating from the center -->
+  <g fill="none" stroke="url(#sunGrad)" stroke-width="2" opacity="0.6">
+    <circle cx="400" cy="420" r="95" stroke-dasharray="12 18" />
+    <circle cx="400" cy="420" r="110" stroke-dasharray="4 12" opacity="0.4" />
+    <circle cx="400" cy="420" r="125" stroke-dasharray="2 8" opacity="0.2" />
+  </g>
+
+  <!-- Central Star / "The Spheres" Core -->
+  <g filter="url(#glow-heavy)">
+    <circle cx="400" cy="420" r="75" fill="url(#sunGrad)" />
+  </g>
+
+  <!-- Planets Layer -->
+  <g>
+    <!-- Inner Planet (Greenish) -->
+    <circle cx="240" cy="385" r="16" fill="url(#planetGreen)" filter="url(#glow-light)" />
+
+    <!-- Middle Planet with Rings (Cyan) -->
+    <g transform="translate(670, 475)">
+      <!-- Back of ring -->
+      <path d="M -45 0 A 45 12 0 0 1 45 0" fill="none" stroke="#00FFFF" stroke-width="3" opacity="0.8" transform="rotate(25)" />
+      <!-- Planet body -->
+      <circle cx="0" cy="0" r="24" fill="url(#planetCyan)" filter="url(#glow-light)" />
+      <!-- Front of ring -->
+      <path d="M 45 0 A 45 12 0 0 1 -45 0" fill="none" stroke="#00FFFF" stroke-width="3" filter="url(#glow-light)" transform="rotate(25)" />
+      <path d="M 52 0 A 52 16 0 0 1 -52 0" fill="none" stroke="#FF00FF" stroke-width="1" opacity="0.6" transform="rotate(25)" />
+    </g>
+
+    <!-- Outer Planet (Pink/Magenta) -->
+    <g transform="translate(100, 520)">
+      <circle cx="0" cy="0" r="32" fill="url(#planetPink)" filter="url(#glow-light)" />
+      <!-- Small Moon -->
+      <circle cx="-45" cy="-20" r="6" fill="#FFFFFF" opacity="0.8" filter="url(#glow-light)" />
+    </g>
+  </g>
+
+  <!-- Typography Layer -->
+  <!-- Band Name -->
+  <text x="400" y="140" text-anchor="middle" font-family="'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', Arial, sans-serif" font-weight="900" font-size="68" fill="#ffffff" letter-spacing="28" filter="url(#glow-light)">COLDPLAY</text>
+  
+  <!-- Subtitle / Album Name -->
+  <text x="400" y="730" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-weight="bold" font-size="28" fill="url(#textGrad)" letter-spacing="12">MUSIC OF THE SPHERES</text>
+
+  <!-- Abstract Cosmic/Alien Glyphs (Decorative) -->
+  <g stroke="#ffffff" stroke-width="2" fill="none" opacity="0.4">
+    <!-- Top Left Glyph -->
+    <circle cx="120" cy="115" r="12" />
+    <path d="M 120 90 L 120 140" />
+    <path d="M 95 115 L 145 115" />
+    <circle cx="120" cy="115" r="4" fill="#ffffff" />
+    
+    <!-- Top Right Glyph -->
+    <circle cx="680" cy="115" r="18" stroke-dasharray="5 5" />
+    <circle cx="680" cy="115" r="6" fill="#ffffff" />
+    
+    <!-- Bottom Left Glyph -->
+    <path d="M 120 690 L 145 715 L 120 740 L 95 715 Z" />
+    <circle cx="120" cy="715" r="3" fill="#ffffff" />
+    
+    <!-- Bottom Right Glyph -->
+    <polygon points="680,690 705,735 655,735" fill="none" stroke="#ffffff" />
+    <path d="M 680 705 L 680 735" />
+  </g>
+</svg>
