@@ -7,14 +7,13 @@ from itsdangerous import URLSafeTimedSerializer
 from email_utils import enviar_correo
 
 app = Flask(__name__)
-app.secret_key = 'ticketnow_secret_key_flask'
+app.secret_key = os.environ.get('SECRET_KEY', 'ticketnow_secret_key_flask')
 
 database_url = os.environ.get('DATABASE_URL', 'sqlite:///local_db.sqlite')
 if database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pymssql://sa:MiloOreo06@localhost:1433/TicketsDB'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
