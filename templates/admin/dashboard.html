@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <a href="{{ url_for('admin_aprobaciones') }}" class="p-6 transition bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-500/30 shadow-sm rounded-2xl hover:border-purple-500">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white">Aprobaciones</h3>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gestionar pedidos y solicitudes VIP</p>
@@ -51,6 +51,10 @@
             <a href="{{ url_for('admin_auditoria') }}" class="p-6 transition bg-white border border-gray-200 shadow-sm dark:bg-[#12121a] dark:border-white/5 rounded-2xl hover:border-purple-500">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white">Auditoría</h3>
                 <p class="mt-1 text-sm text-gray-500">Ver registro de acciones</p>
+            </a>
+            <a href="{{ url_for('admin_usuarios') }}" class="p-6 transition bg-white border border-gray-200 shadow-sm dark:bg-[#12121a] dark:border-white/5 rounded-2xl hover:border-purple-500">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Usuarios</h3>
+                <p class="mt-1 text-sm text-gray-500">Ver y administrar usuarios</p>
             </a>
         </div>
     </div>

@@ -1012,5 +1012,12 @@ def admin_auditoria():
     logs = Auditoria.query.order_by(Auditoria.fecha.desc()).all()
     return render_template('admin/auditoria.html', usuario=user, logs=logs)
 
+@app.route('/admin/usuarios')
+def admin_usuarios():
+    user = get_current_user()
+    if not user or user.rol != 'admin': return redirect(url_for('index'))
+    usuarios = Usuario.query.order_by(Usuario.fechaRegistro.desc()).all()
+    return render_template('admin/usuarios.html', usuario=user, usuarios=usuarios)
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
