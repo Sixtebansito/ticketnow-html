@@ -97,7 +97,7 @@ def index():
         db.session.rollback()
         landing_gif = 'https://www.image2url.com/r2/default/gifs/1787878685830-94dc7db9-4f10-4216-87d5-c1a594f53291.gif'
     
-    eventos_db = Evento.query.filter_by(activo=True).order_by(Evento.fecha.asc()).limit(3).all()
+    eventos_db = Evento.query.filter_by(activo=True).order_by(Evento.fecha.asc()).limit(6).all()
     import json
     eventos = []
     colores = [
